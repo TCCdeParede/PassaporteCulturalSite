@@ -1,0 +1,67 @@
+create database etecja1;
+
+use etecja1;
+
+create table Alunos(
+	RmAlu int,
+	Nome varchar(255),
+	EmailAlu varchar(60),
+	NomeTu varchar(4),
+	primary key(RmAlu)
+);
+
+create table Professores(
+	EmailProf varchar(60),
+	Nome varchar(255),
+	Componente varchar(30),
+	NomeTu varchar(4),
+	primary key(EmailProf, Componente)
+);
+
+create table Turma(
+	NomeTu varchar(4),
+	Sala int,
+	QtdAlu int,
+	EmailProf varchar(60),
+	primary key(NomeTu)
+);
+
+alter table Alunos add constraint fk_NomeTu foreign key(NomeTu) references Turma(NomeTu) on delete cascade on update cascade;
+
+insert into Professores (EmailProf, Nome, Componente, NomeTu) values('davi.email@etec.sp.gov.br','Davi Cassiano','Matematica','3DSB');
+insert into Professores (EmailProf, Nome, Componente, NomeTu) values('marcos.email@etec.sp.gov.br','Marcos Antonio','Portugues','2EAA');
+insert into Professores (EmailProf, Nome, Componente, NomeTu) values('davi.email@etec.sp.gov.br','Davi Cassiano','Historia','3DSB');
+
+insert into Turma
+values
+('1EAA',12,39,'davi.email@etec.sp.gov.br'),
+('1EAB',12,39,'davi.email@etec.sp.gov.br'),
+('1DSA',12,39,'davi.email@etec.sp.gov.br'),
+('1DSB',12,39,'davi.email@etec.sp.gov.br'),
+('2EAA',12,39,'davi.email@etec.sp.gov.br'),
+('2EAB',12,39,'davi.email@etec.sp.gov.br'),
+('2DSA',12,39,'davi.email@etec.sp.gov.br'),
+('2DSB',12,39,'davi.email@etec.sp.gov.br'),
+('3EAA',12,39,'davi.email@etec.sp.gov.br'),
+('3EAB',12,39,'davi.email@etec.sp.gov.br'),
+('3DSA',12,39,'davi.email@etec.sp.gov.br'),
+('3DSB',8,40,'marcos.email@etec.sp.gov.br');
+
+insert into Alunos
+values
+('24004','Jarque','jack.email@etec.sp.gov.br','3DSA'),
+('24005','Cleiton','cleiton.email@etec.sp.gov.br','3EAA'),
+('24006','Ana','ana.email@etec.sp.gov.br','3EAB'),
+('24007','Larissa','larissa.email@etec.sp.gov.br','2DSB'),
+('24008','Carlos','carlos.email@etec.sp.gov.br','2DSA'),
+('24009','Bruno','bruno.email@etec.sp.gov.br','2EAB'),
+('24010','Vitor','vitor.email@etec.sp.gov.br','1DSB'),
+('24011','Maria','maria.email@etec.sp.gov.br','1DSA'),
+('24012','Jose','jose.email@etec.sp.gov.br','1EAA'),
+('24013','Julia','julia.email@etec.sp.gov.br','1EAB'),
+('24001','Arthur','arthur.email@etec.sp.gov.br','3DSB'),
+('24002','Gustavo','gustavo.email@etec.sp.gov.br','2EAA'),
+('24003','Rafael','rafael.email@etec.sp.gov.br','3DSB');
+
+alter table Professores add constraint fk_NomeTu2 foreign key(NomeTu) references Turma(NomeTu) on delete cascade on update cascade;
+alter table Turma add constraint fk_EmailProf foreign key(EmailProf) references Professores(EmailProf) on delete cascade on update cascade;

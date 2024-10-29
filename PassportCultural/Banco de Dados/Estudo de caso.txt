@@ -1,0 +1,93 @@
+Nome: Passaporte Cultural
+
+ No nosso projeto para realizar a digitalização do Passaporte Cultural, é necessário criar um banco que dados que consiga salvar determinados valores.
+ Acima de tudo, para que seja realizado o primeiro login, deve ser criado um registro de uso único para logar como administrador e registrar outros administradores.
+ O projeto deverá ter dados salvos dos alunos, para que consigam identificar o aluno(a) na respectiva foto. Esse registro deve conter o RM do aluno, o nome, sua turma, uma senha para futuro login e seu email institucional.
+ Também é de extrema importância incluir uma tabela para as turmas dos alunos, incluindo o nome da turma, a sala dela, o número de alunos e o RM do professor coordenador daquela turma.
+ O banco de dados possuirá ainda o registro dos professores, com o RM, o nome, uma senha para futuro login, o email institucional e o nivel de autoridade, dado que determinados professores terão o nivel de manejamento superior a outros.
+ Uma das tabelas mais importantes nesse banco de dados será a tabela "Fotos". Nela, será incluso um id especifico da foto, a própria foto, o rm do aluno que tirou a foto, a coordenada X e Y da foto, o estado da revisão e o rm do professor que revisou a foto.
+ Por fim, o projeto deve ter um sistema de pontuação. Este sistema terá um atributo da pontuação geral da turma, do aluno no mês, dele no ano, e na tabela da foto, sobre a pontuação específica daquela foto. Caso haja menos ou mais alunos em uma determinada sala, a pontuação deve ser alterada para ser justa.
+ 
+
+admin (admid_, admsenha)
+
+professor (rmprof_, nomeprof, emailprof, profsenha, nvauto)
+
+turma (nometur_, sala, pontgeral, qtdalu, pontjust, rmprof*)
+
+aluno (rmalu_, nomealu, emailalu, alusenha, pontmes, pontano, nometur*)  
+
+foto (idfoto_, imgfoto, cdx, cdy, rev, pontfoto, rmalu*, rmprof*)
+
+professor --> turma (coordena)
+turma --> aluno (possui)
+aluno --> foto (tira)
+professor --> foto (revisa)
+
+-- Crie o banco de dados
+CREATE DATABASE IF NOT EXISTS passaporte_cultural;
+-- Use o banco de dados
+USE passaporte_cultural;
+
+-- Tabela do Administrador
+CREATE TABLE IF NOT EXISTS admin (
+ admid VARCHAR(5) PRIMARY KEY NOT NULL,
+ admsenha VARCHAR(12) NOT NULL
+);
+
+-- Tabela do Professor
+CREATE TABLE IF NOT EXISTS professor (
+ rmprof INT PRIMARY KEY NOT NULL,
+ nomeprof VARCHAR(255) NOT NULL,
+ emailprof VARCHAR(50) NOT NULL,
+ profsenha VARCHAR(12) NOT NULL,
+ nvauto INT NOT NULL
+);
+
+-- Tabela da Turma
+CREATE TABLE IF NOT EXISTS turma (
+ nometur VARCHAR(5) PRIMARY KEY NOT NULL,
+ sala INT NOT NULL,
+ pontgeral INT NOT NULL,
+ qtdalu INT NOT NULL,
+ pontjust INT GENERATED ALWAYS AS (((pontgeral / qtdalu) * (40 - qtdalu)) + pontgeral) VIRTUAL,
+ rmprof INT NOT NULL,
+ FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Tabela de Alunos
+CREATE TABLE IF NOT EXISTS alunos (
+ rmalu INT PRIMARY KEY NOT NULL,
+ nomealu VARCHAR(255) NOT NULL,
+ emailalu VARCHAR(50) NOT NULL,
+ alusenha VARCHAR(12) NOT NULL,
+ pontmes INT NOT NULL,
+ pontano INT NOT NULL,
+ nometur VARCHAR(5) NOT NULL,
+ FOREIGN KEY (nometur) REFERENCES turma(nometur) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Tabela de Fotos
+CREATE TABLE IF NOT EXISTS foto (
+ idfoto INT AUTO_INCREMENT PRIMARY KEY,
+ imgfoto BLOB NOT NULL,
+ cdx INT NOT NULL,
+ cdy INT NOT NULL,
+ rev VARCHAR(8),
+ pontfoto INT NOT NULL,
+ rmalu INT NOT NULL,
+ rmprof INT NOT NULL,
+ FOREIGN KEY (rmalu) REFERENCES alunos(rmalu) ON DELETE CASCADE ON UPDATE CASCADE,
+ FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha, nvauto) VALUES (22513,'Laelson Mota','manolala.mota@etec.sp.gov.br','cafeteira157',1);
+
+INSERT INTO turma (nometur, sala, pontgeral, qtdalu, rmprof) VALUES ('3DSB',11,780,39,22513);
