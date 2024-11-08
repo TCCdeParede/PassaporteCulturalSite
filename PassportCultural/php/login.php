@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if (password_verify($senha, $profsenha)) {
         // Caso as senhas no banco estejam criptografadas
         $_SESSION['rmprof'] = $rmprof;
-        header("Location: classes.php");
+        header("Location: ../index.php");
         exit();
       } elseif ($senha === $profsenha) {
         // Caso as senhas não estejam criptografadas (comparação simples)
@@ -82,7 +82,7 @@ $conexao->close();
   <!-- FIM HEADER -->
 
   <!-- MAIN -->
-  <main class="form-signin container-lg m-auto align-content-center px-4 h-75">
+  <main class="form-signin container-lg m-auto d-flex flex-column justify-content-center px-4 h-75">
     <form action="" method="post">
       <h1 class="h3 mb-3 fw-normal">Login</h1>
 

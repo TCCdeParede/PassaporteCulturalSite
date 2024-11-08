@@ -83,7 +83,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
     <div class="col-lg-6 mx-auto">
       <div class="card text-white shadow-sm" style="background-color: #001f3f">
         <div class="card-body">
-          <h5 class="card-title">Visitas em pendência:</h5>
+          <h5 class="card-title">Revisões em pendência:</h5>
           <p class="card-text fs-4">0</p>
           <a href="./html/ConsultarPontos.html" class="btn btn-outline-light">VER MAIS</a>
         </div>
