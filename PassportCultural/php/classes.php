@@ -101,7 +101,7 @@
                         <option value="3eaa" name="3eaa">3º ADM A</option>
                         <option value="3eab" name="3eab">3º ADM B</option>
                         <option value="3dsa" name="3dsa">3º DS A</option>
-                        <option value="3dsb" name="3dsb">3º DS B</option>
+                        <option value="3dsb" name="3DSB">3º DS B</option>
                     </select>
                     <label for="classe" class="labelSelectCustom">Selecione uma sala</label>
                 </div>
@@ -129,15 +129,16 @@
                         $rmalu = $row['rmalu'];
                         $nomealu = $row['nomealu'];
                         $emailalu = $row['emailalu'];
+                        $pontano = $row['pontano'];
                         echo "
                     
     <tr>
-        <td>$RmAlu</td>
-        <td>$Nome</td>
-        <td>$EmailAlu</td>
-        <td></td>
-        <td><a href=\"editar.php?codigo=$RmAlu\">[Editar]</a></td>
-        <td><a href=\"excluir.php?codigo=$RmAlu\">[Excluir]</a></td>
+        <td>$rmalu</td>
+        <td>$nomealu</td>
+        <td>$emailalu</td>
+        <td>$pontano</td>
+        <td><a href=\"editar.php?codigo=$rmalu\">[Editar]</a></td>
+        <td><a href=\"excluir.php?codigo=$rmalu\">[Excluir]</a></td>
     </tr>";
                     }
                     ?>

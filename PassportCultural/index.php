@@ -78,15 +78,16 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
   <!-- FIM HEADER -->
 
   <!-- MAIN -->
-  <main class="px-4 py-5 my-5 text-center">
-    <h1 class="display-5 fw-bold text-body-emphasis">Bem-vindo <?php echo $nomeprof;?></h1>
+  <main class="px-4 py-5 my-5 text-center d-flex flex-column justify-content-center">
+    <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeprof;?>!</h1>
     <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4">
-        Quickly design and customize responsive mobile-first sites with
-        Bootstrap, the world’s most popular front-end open source toolkit,
-        featuring Sass variables and mixins, responsive grid system, extensive
-        prebuilt components, and powerful JavaScript plugins.
-      </p>
+      <div class="card text-white shadow-sm" style="background-color: #001f3f">
+        <div class="card-body">
+          <h5 class="card-title">Visitas em pendência:</h5>
+          <p class="card-text fs-4">0</p>
+          <a href="./html/ConsultarPontos.html" class="btn btn-outline-light">VER MAIS</a>
+        </div>
+      </div>
     </div>
   </main>
   <!-- FIM MAIN -->
