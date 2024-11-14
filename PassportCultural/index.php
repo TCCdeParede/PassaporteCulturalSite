@@ -65,7 +65,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
               <a class="nav-link" href="./php/classes.php">Classes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./html/ConsultarPontos.html">Visitas</a>
+              <a class="nav-link" href="./html/visitas.html">Visitas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="php/logout.php">Sair</a>
@@ -85,7 +85,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
         <div class="card-body">
           <h5 class="card-title">Revisões em pendência:</h5>
           <p class="card-text fs-4">0</p>
-          <a href="./html/ConsultarPontos.html" class="btn btn-outline-light">VER MAIS</a>
+          <a href="./html/visitas.html" class="btn btn-outline-light">VER MAIS</a>
         </div>
       </div>
     </div>

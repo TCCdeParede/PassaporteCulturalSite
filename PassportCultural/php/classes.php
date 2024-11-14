@@ -49,7 +49,7 @@
                             <a class="nav-link active" href="#">Classes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../html/ConsultarPontos.html">Visitas</a>
+                            <a class="nav-link" href="../html/visitas.html">Visitas</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./logout.php">Sair</a>
@@ -107,43 +107,42 @@
                 </div>
                 <button class="btn btn-outline-info m-3 btnCustom" type="submit">Enviar</button>
             </form>
-            <table class="table table-hover table-bordered tableCustom">
-                <thead>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered  ">
+                    <thead>
+                        <tr>
+                            <th>RM</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Pontos</th>
+                            <th colspan=" 2">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        include "conexao.php";
+                        $classe = $_GET["classe"] ?? "";
+                        $query = mysqli_query($conexao, "SELECT * FROM alunos WHERE nometur='$classe' ORDER BY nomealu ASC;");
+                        while ($row = mysqli_fetch_array($query)) {
+                            $rmalu = $row['rmalu'];
+                            $nomealu = $row['nomealu'];
+                            $emailalu = $row['emailalu'];
+                            $pontano = $row['pontano'];
+                            echo "
+                        
                     <tr>
-                        <th>RM</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Pontos</th>
-                        <th colspan=" 2">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <?php
-                    include "conexao.php";
-
-                    $classe = $_GET["classe"] ?? "";
-                    $query = mysqli_query($conexao, "SELECT * FROM alunos WHERE nometur='$classe' ORDER BY nomealu ASC;");
-
-                    while ($row = mysqli_fetch_array($query)) {
-                        $rmalu = $row['rmalu'];
-                        $nomealu = $row['nomealu'];
-                        $emailalu = $row['emailalu'];
-                        $pontano = $row['pontano'];
-                        echo "
-                    
-    <tr>
-        <td>$rmalu</td>
-        <td>$nomealu</td>
-        <td>$emailalu</td>
-        <td>$pontano</td>
-        <td><a href=\"editar.php?codigo=$rmalu\">[Editar]</a></td>
-        <td><a href=\"excluir.php?codigo=$rmalu\">[Excluir]</a></td>
-    </tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                        <td>$rmalu</td>
+                        <td>$nomealu</td>
+                        <td>$emailalu</td>
+                        <td>$pontano</td>
+                        <td><a href=\"editar.php?codigo=$rmalu\">[Editar]</a></td>
+                        <td><a href=\"excluir.php?codigo=$rmalu\">[Excluir]</a></td>
+                    </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
     <!-- FIM MAIN -->

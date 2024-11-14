@@ -163,13 +163,9 @@ span.titleLogin {
   color: white;
 }
 
-.tableCustom {
-  font-weight: 350;
-  --bs-table-bg-type: var(--corTerciaria);
-  --bs-table-color: white;
-  --bs-table-hover-bg: var(--corSecundaria);
-  --bs-table-hover-color: white;
-  border-color: #001427;
+.table {
+  --bs-table-bg: var(--corTerciaria);
+  --bs-table-border-color: black; 
 }
 
 /* CONSULTARPONTOS STYLE */
