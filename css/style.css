@@ -225,9 +225,21 @@ span.titleLogin {
   color: white;
 }
 
+.table-responsive {
+  background-color: var(--corTerciaria);
+  min-height: 200px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.589);
+  padding: 0;
+}
+
 .table {
   --bs-table-bg: var(--corTerciaria);
   --bs-table-border-color: black;
+  margin: 0;
+}
+
+.table tr{
+  height: 50px;
 }
 
 /* CONSULTARPONTOS STYLE */
