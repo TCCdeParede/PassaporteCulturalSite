@@ -1,0 +1,258 @@
+/* FONTS IMPORT */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+/* COLORS & FONTS */
+
+:root {
+  --corPrincipal: #001f3f;
+  --corSecundaria: #3a6d8c;
+  --corTerciaria: #6a9ab0;
+  --fonteTitulos: "Inter", sans-serif;
+  --fonteLinks: "Playfair Display", serif;
+  --fonteTextos: "PT Serif", serif;
+}
+
+/* GERAL STYLES */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--fonteTitulos);
+}
+
+a {
+  font-family: var(--fonteLinks);
+}
+
+p,
+span {
+  font-family: var(--fonteTextos);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #ead8b1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* MODAL STYLES */
+
+.modal {
+  display: none; /* Escondido por padrão */
+  position: fixed; /* Fica fixo na tela */
+  z-index: 1; /* Fica em cima de outros elementos */
+  left: 0;
+  top: 0;
+  width: 100%; /* Largura total da tela */
+  height: 100%; /* Altura total da tela */
+  background-color: rgba(0, 0, 0, 0.4); /* Fundo semitransparente */
+  overflow: auto; /* Caso o conteúdo seja maior que a tela */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto; /* Centraliza o modal */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Largura do modal */
+  max-width: 500px; /* Largura máxima */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+  border-radius: 8px; /* Bordas arredondadas */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+button {
+  background-color: #4caf50; /* Cor do botão */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px; /* Bordas arredondadas */
+}
+
+button:hover {
+  background-color: #45a049; /* Cor do botão quando passa o mouse */
+}
+
+button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* Animação do modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* LOGIN STYLES */
+
+span.titleLogin {
+  font-size: 2rem;
+}
+
+.inputGroup label {
+  font-family: var(--fonteTextos);
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.inputGroup input {
+  background-color: rgb(196, 221, 230);
+  border: none;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.445);
+  padding: 15px;
+  font-size: 1.1rem;
+}
+
+.inputGroup input::placeholder {
+  font-family: var(--fonteTextos);
+  font-size: 0.9rem;
+}
+
+.inputGroup input:hover {
+  background-color: rgb(152, 195, 209);
+}
+
+.inputGroup input:focus {
+  background-color: rgb(152, 195, 209);
+  border: none;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.445);
+}
+
+.form-check .form-check-input {
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.404);
+  cursor: pointer;
+}
+
+.form-check .form-check-input:focus {
+  box-shadow: none;
+}
+
+.form-check .form-check-input:checked {
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.404);
+  background: linear-gradient(
+    135deg,
+    hsla(210, 100%, 12%, 1) 0%,
+    hsla(203, 41%, 39%, 1) 50%,
+    hsla(199, 31%, 55%, 1) 100%
+  );
+}
+
+.buttonCustom {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.459);
+  background: linear-gradient(
+    135deg,
+    hsla(210, 100%, 12%, 1) 0%,
+    hsla(203, 41%, 39%, 1) 50%,
+    hsla(199, 31%, 55%, 1) 100%
+  );
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  font-family: var(--fonteTextos);
+}
+
+/* SPECIFIC HEADER STYLES */
+
+.navbar-custom {
+  background-color: #001f3f;
+}
+
+.offcanvas-custom {
+  background-color: #001427;
+}
+
+/* CLASSES.PHP STYLES */
+
+.selectCustom {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.562);
+  background-color: var(--corTerciaria);
+}
+
+.selectCustom:hover {
+  background-color: #5b8699;
+}
+
+.selectCustom:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.411);
+}
+
+.selectCustom option {
+  font-size: 0.9rem;
+  font-weight: 350;
+  color: white;
+}
+
+.labelSelectCustom::after {
+  display: none;
+}
+
+.btnCustom {
+  color: var(--corTerciaria);
+  border-color: var(--corTerciaria);
+}
+
+.btnCustom:hover {
+  border-color: var(--corTerciaria);
+  background-color: #6a9ab0;
+  color: white;
+}
+
+.table {
+  --bs-table-bg: var(--corTerciaria);
+  --bs-table-border-color: black;
+}
+
+/* CONSULTARPONTOS STYLE */
+
+.buttonConsultarAceitar {
+  background-color: #3b8b3b;
+}
+
+.buttonConsultarAceitar:hover {
+  background-color: #347734;
+}
+
+.buttonConsultarRecusar {
+  background-color: #c62828;
+}
+
+.buttonConsultarRecusar:hover {
+  background-color: #a12020;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
