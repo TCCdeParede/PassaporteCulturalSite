@@ -108,7 +108,7 @@
                 <button class="btn btn-outline-info m-3 btnCustom" type="submit">Enviar</button>
             </form>
             <div class="table-responsive">
-                <table class="table table-hover table-bordered  ">
+                <table class="table table-hover table-bordered text-center align-middle">
                     <thead>
                         <tr>
                             <th>RM</th>
