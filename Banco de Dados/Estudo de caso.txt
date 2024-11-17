@@ -69,17 +69,19 @@ CREATE TABLE IF NOT EXISTS alunos (
 
 -- Tabela de Fotos
 CREATE TABLE IF NOT EXISTS visita (
- idfoto INT AUTO_INCREMENT PRIMARY KEY,
- imgfoto BLOB NOT NULL,
- cdx INT NOT NULL,
- cdy INT NOT NULL,
- rev VARCHAR(8),
- pontfoto INT NOT NULL,
- rmalu INT NOT NULL,
- rmprof INT NOT NULL,
- FOREIGN KEY (rmalu) REFERENCES alunos(rmalu) ON DELETE CASCADE ON UPDATE CASCADE,
- FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
+    idfoto INT AUTO_INCREMENT PRIMARY KEY,
+    imgfoto BLOB NOT NULL,
+    cdx DOUBLE NOT NULL,
+    cdy DOUBLE NOT NULL,
+    rev VARCHAR(8),
+    dia DATETIME NOT NULL,
+    pontfoto INT NOT NULL,
+    rmalu INT NOT NULL,
+    rmprof INT NOT NULL,
+    FOREIGN KEY (rmalu) REFERENCES alunos(rmalu) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
 
