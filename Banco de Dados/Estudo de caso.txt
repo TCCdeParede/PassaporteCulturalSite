@@ -67,10 +67,9 @@ CREATE TABLE IF NOT EXISTS alunos (
  FOREIGN KEY (nometur) REFERENCES turma(nometur) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Tabela de Fotos
+-- Tabela de Visitas
 CREATE TABLE IF NOT EXISTS visita (
     idfoto INT AUTO_INCREMENT PRIMARY KEY,
-    imgfoto BLOB NOT NULL,
     cdx DOUBLE NOT NULL,
     cdy DOUBLE NOT NULL,
     rev VARCHAR(8),

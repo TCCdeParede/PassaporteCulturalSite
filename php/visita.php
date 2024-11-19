@@ -12,41 +12,72 @@ error_reporting(E_ALL);
 ob_start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $input = json_decode(file_get_contents("php://input"), true);
+    $inputData = json_decode(file_get_contents("php://input"), true);
 
-    if (empty($input["userId"]) || empty($input["local"]) || empty($input["photos"])) {
-        echo json_encode(["status" => "error", "message" => "Campos obrigatórios não preenchidos"]);
-        exit;
-    }
+    if ($inputData) {
+        $userId = $inputData['userId'];
+        $local = $inputData['local'];
+        $photos = $inputData['photos'];
+        $pontfoto = $inputData['pontfoto'];
+        $rev = $inputData['rev'];
+        $rmprof = $inputData['rmprof'];
 
-    $userId = $input["userId"];
-    $local = $input["local"];
-    $pontfoto = 0;
-    $rev = "nao";
-    $rmprof = 22513;
-    $photos = $input["photos"];
-    $firstPhoto = $photos[0];
-    $data = date("Y-m-d", strtotime($firstPhoto["date"]));
-    $hora = date("H:i:s", strtotime($firstPhoto["date"]));
-    $cdx = $firstPhoto["location"]["latitude"];
-    $cdy = $firstPhoto["location"]["longitude"];
+        // Preparando para inserir na tabela visita
+        $conexao->begin_transaction();
 
-    $imgData = base64_decode($firstPhoto["uri"]); // Decodificando a imagem de base64
+        try {
+            // Converte a data e hora do formato "18/11/2024 22:31:38" para "Y-m-d H:i:s"
+            $dataHora = DateTime::createFromFormat('d/m/Y H:i:s', $photos[0]['date']);
+            $dataVisita = $dataHora->format('Y-m-d');
+            $horaVisita = $dataHora->format('H:i:s');
 
-    $stmt = $conexao->prepare("INSERT INTO visita (imgfoto, cdx, cdy, rev, data, hora, pontfoto, rmalu, rmprof) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("bddsssiii", $imgData, $cdx, $cdy, $rev, $data, $hora, $pontfoto, $userId, $rmprof);
+            // Inserir a visita
+            $sqlVisita = "INSERT INTO visita (cdx, cdy, rev, data, hora, pontfoto, rmalu, rmprof) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmtVisita = $conexao->prepare($sqlVisita);
 
-    if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Visita registrada com sucesso"]);
+            // Definindo os parâmetros para a visita
+            $cdx = $photos[0]['location']['latitude']; // Latitude
+            $cdy = $photos[0]['location']['longitude']; // Longitude
+            $rev = $rev ? "yes" : "no"; // Revisado
+            $pontfoto = 0; // Se necessário, substitua por um valor dinâmico
+            $userId = $inputData['userId']; // Pegando o ID do usuário
+            $rmprof = $inputData['rmprof']; // ID do professor
+
+            // Corrigir o número de parâmetros no bind_param
+            $stmtVisita->bind_param("dssssssi", $cdx, $cdy, $rev, $dataVisita, $horaVisita, $pontfoto, $userId, $rmprof);
+            $stmtVisita->execute();
+            $visitaId = $stmtVisita->insert_id; // Pegando o id da visita inserida
+
+            // Criar diretório 'uploads' caso não exista
+            $uploadDir = "../uploads/";
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true); // Cria o diretório com permissões adequadas
+            }
+
+            // Agora inserimos na tabela visita_imagens
+            $sqlImagens = "INSERT INTO visita_imagens (idfoto, caminho_imagem) VALUES (?, ?)";
+            $stmtImagens = $conexao->prepare($sqlImagens);
+
+            // Inserir as imagens na tabela visita_imagens
+            foreach ($photos as $photo) {
+                // Caminho da imagem (nome do arquivo ou caminho)
+                $imagePath = $uploadDir . "photo_" . uniqid() . ".jpg";
+                file_put_contents($imagePath, base64_decode($photo['uri'])); // Salvando a imagem no servidor
+
+                // Inserir o caminho da imagem na tabela visita_imagens
+                $stmtImagens->bind_param("is", $visitaId, $imagePath);
+                $stmtImagens->execute();
+            }
+
+            $conexao->commit();
+            echo json_encode(["status" => "success"]);
+        } catch (Exception $e) {
+            $conexao->rollback();
+            echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+        }
     } else {
-        echo json_encode(["status" => "error", "message" => "Erro ao registrar visita"]);
+        echo json_encode(["status" => "error", "message" => "Dados inválidos"]);
     }
-
-    $stmt->close();
-} else {
-    echo json_encode(["status" => "error", "message" => "Método inválido"]);
 }
-
-$conexao->close();
-ob_end_flush();
 ?>
