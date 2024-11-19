@@ -72,28 +72,6 @@ body {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-button {
-  background-color: #4caf50; /* Cor do botão */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px; /* Bordas arredondadas */
-}
-
-button:hover {
-  background-color: #45a049; /* Cor do botão quando passa o mouse */
-}
-
-button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-
 /* Animação do modal */
 @keyframes fadeIn {
   from {
@@ -238,11 +216,20 @@ span.titleLogin {
   margin: 0;
 }
 
-.table tr{
+.table tr {
   height: 50px;
 }
 
-/* CONSULTARPONTOS STYLE */
+/* ConsultarVisita STYLE */
+
+/* Desabilita o efeito de hover nos botões do carrossel */
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: transparent !important; 
+  box-shadow: none !important; 
+  border: none !important;
+}
+
 
 .buttonConsultarAceitar {
   background-color: #3b8b3b;

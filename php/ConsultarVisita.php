@@ -20,7 +20,10 @@ $rmalu = $_GET['rmalu'];
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- CSS -->
   <link rel="stylesheet" href="../css/style.css" />
+  <!-- Google Maps JavaScript API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMwJ2vSpaCn-NTpNkBp_1I06TIdt4AT8U"></script>
 </head>
 
 <body>
@@ -65,7 +68,7 @@ $rmalu = $_GET['rmalu'];
               <a class="nav-link active" href="./listarVisitas.php">Visitas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./php/logout.php">Sair</a>
+              <a class="nav-link" href="./logout.php">Sair</a>
             </li>
           </ul>
         </div>
@@ -117,12 +120,12 @@ $rmalu = $_GET['rmalu'];
           if ($posicao_query) {
             $posicoes = $posicao_query->fetch_all(MYSQLI_ASSOC);
             foreach ($posicoes as $index => $visita) {
-                if ($visita['idfoto'] == $idvisita) {
-                    $posicaoAtual = $index + 1; 
-                    break;
-                }
+              if ($visita['idfoto'] == $idvisita) {
+                $posicaoAtual = $index + 1;
+                break;
+              }
             }
-        }
+          }
           ?>
         </div>
       </div>
@@ -134,12 +137,67 @@ $rmalu = $_GET['rmalu'];
           <!-- Foto -->
           <div
             class="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3 mb-md-0">
-            <img src="../img/classes.png" class="img-fluid rounded" />
+            <?php
+
+            $sqlcode_imagens = "SELECT caminho_imagem FROM visita_imagens WHERE idfoto = '$idvisita'";
+            $imagens_query = $conexao->query($sqlcode_imagens);
+
+            $caminhos = [];
+
+            while ($imagem = $imagens_query->fetch_assoc()) {
+              $caminhos[] = $imagem['caminho_imagem'];
+            }
+            ?>
+            <!-- CARROSSEL DE IMAGENS -->
+            <div
+              id="carouselExampleIndicators"
+              class="carousel slide h-100 w-100"
+              data-bs-ride="carousel">
+              <!-- INDICADORES -->
+              <div class="carousel-indicators">
+                <?php
+                foreach ($caminhos as $index => $caminho) {
+                  $active = $index === 0 ? 'active' : '';
+                  echo "<button type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide-to='$index' class='$active' aria-label='Slide " . ($index + 1) . "'></button>";
+                }
+                ?>
+              </div>
+              <!-- FIM INDICADORES -->
+
+              <!-- SLIDES -->
+              <div class="carousel-inner h-100">
+                <?php
+                foreach ($caminhos as $index => $caminho) {
+                  $active = $index === 0 ? 'active' : '';
+                  echo "
+                    <div class='carousel-item $active h-100'>
+                      <img src='$caminho' class='d-block w-100 h-100 object-fit-cover' alt='Imagem da visita'>
+                    </div>";
+                }
+                ?>
+              </div>
+              <!-- FIM SLIDES -->
+
+              <!-- CONTROLES -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+              <!-- FIM CONTROLES -->
+            </div>
+            <!-- FIM CARROSSEL DE IMAGENS -->
           </div>
           <!-- Maps -->
           <div
-            class="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3 mb-md-0">
-            <img src="../img/classes.png" class="img-fluid rounded" />
+            class="col-12 col-md-6 d-flex align-items-center justify-content-center">
+            <div
+              id="map"
+              class="w-100 h-100 border"
+              style="min-height: 300px;"></div>
           </div>
         </div>
 
@@ -154,6 +212,9 @@ $rmalu = $_GET['rmalu'];
           $hora = $visita['hora'];
           $horaFormatada = date("H:i", strtotime($hora));
           $local = $visita['local'];
+
+          $latitude = $visita['cdx'];
+          $longitude = $visita['cdy'];
 
           echo "
           <span>Data: $dataFormatada</span>
@@ -278,6 +339,27 @@ $rmalu = $_GET['rmalu'];
         modal.style.display = "none";
       }
     };
+  </script>
+
+  <script>
+    function initMap() {
+      const coordenadas = {
+        lat: <?php echo $latitude; ?>,
+        lng: <?php echo $longitude; ?>
+      };
+
+      const mapa = new google.maps.Map(document.getElementById("map"), {
+        center: coordenadas,
+        zoom: 15,
+      });
+
+      new google.maps.Marker({
+        position: coordenadas,
+        map: mapa,
+        title: "Local da visita",
+      });
+    }
+    window.onload = initMap;
   </script>
 </body>
 
