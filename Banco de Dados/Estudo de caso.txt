@@ -82,6 +82,14 @@ CREATE TABLE IF NOT EXISTS visita (
     FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Tabela de imagens das visitas
+CREATE TABLE IF NOT EXISTS visita_imagens (
+    idimagem INT AUTO_INCREMENT PRIMARY KEY,
+    idfoto INT NOT NULL,       
+    caminho_imagem TEXT NOT NULL, 
+    FOREIGN KEY (idfot) REFERENCES visita(idfoto) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
 
