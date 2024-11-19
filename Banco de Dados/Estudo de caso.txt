@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS visita (
     cdx DOUBLE NOT NULL,
     cdy DOUBLE NOT NULL,
     rev VARCHAR(8),
-    dia DATETIME NOT NULL,
+    data DATE NOT NULL,
+    hora TIME NOT NULL,
     pontfoto INT NOT NULL,
     rmalu INT NOT NULL,
     rmprof INT NOT NULL,
@@ -82,13 +83,8 @@ CREATE TABLE IF NOT EXISTS visita (
     FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
-INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
-
-
-
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
 
 INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha, nvauto) VALUES (22513,'Laelson Mota','manolala.mota@etec.sp.gov.br','cafeteira157',1);
 
