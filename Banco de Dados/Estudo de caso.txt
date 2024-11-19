@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS visita (
     pontfoto INT NOT NULL,
     rmalu INT NOT NULL,
     rmprof INT NOT NULL,
+    local VARCHAR(50) NOT NULL,
     FOREIGN KEY (rmalu) REFERENCES alunos(rmalu) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -87,7 +88,7 @@ CREATE TABLE IF NOT EXISTS visita_imagens (
     idimagem INT AUTO_INCREMENT PRIMARY KEY,
     idfoto INT NOT NULL,       
     caminho_imagem TEXT NOT NULL, 
-    FOREIGN KEY (idfot) REFERENCES visita(idfoto) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (idfoto) REFERENCES visita(idfoto) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
