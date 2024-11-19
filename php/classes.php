@@ -49,7 +49,7 @@
                             <a class="nav-link active" href="#">Classes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../html/visitas.html">Visitas</a>
+                            <a class="nav-link" href="./listarVisitas.php">Visitas</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./logout.php">Sair</a>
@@ -135,8 +135,8 @@
                         <td>$nomealu</td>
                         <td>$emailalu</td>
                         <td>$pontano</td>
-                        <td><a href=\"editar.php?codigo=$rmalu\">[Editar]</a></td>
-                        <td><a href=\"excluir.php?codigo=$rmalu\">[Excluir]</a></td>
+                        <td><a href=\"editar.php?codigo=$rmalu\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">[Editar]</a></td>
+                        <td><a href=\"excluir.php?codigo=$rmalu\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">[Excluir]</a></td>
                     </tr>";
                         }
                         ?>

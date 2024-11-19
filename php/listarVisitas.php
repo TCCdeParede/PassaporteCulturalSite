@@ -82,36 +82,41 @@
               <th scope="col">Sala</th>
               <th scope="col">Data de visita</th>
               <th scope="col">Local visitado</th>
-              <th scope="col" colspan="2">Ação</th>
+              <th scope="col">Ação</th>
             </tr>
           </thead>
           <tbody class="table-group-divider">
             <?php
             include "conexao.php";
+
             $sqlcode = "SELECT * FROM visita";
             $sqlquery = $conexao->query($sqlcode);
-            $visita = $sqlquery->fetch_assoc();
-            $qtdRowsAffected = $sqlquery->num_rows;
-            $sqlcode = "SELECT * FROM alunos";
-            $sqlquery = $conexao->query($sqlcode);
-            $aluno = $sqlquery->fetch_assoc();
-            for ($i = 1; $i <= $qtdRowsAffected; $i++) {
+
+            while ($visita = $sqlquery->fetch_assoc()) {
               $rmalu = $visita['rmalu'];
+
+              $sqlcode_aluno = "SELECT nomealu, nometur FROM alunos WHERE rmalu = '$rmalu'";
+              $aluno_query = $conexao->query($sqlcode_aluno);
+              $aluno = $aluno_query->fetch_assoc();
+
               $nomealu = $aluno['nomealu'];
               $nometur = $aluno['nometur'];
+              $idvisita = $visita['idfoto'];
               $data = $visita['data'];
+              $dataFormatada = date("d/m/Y", strtotime($data));
               $local = $visita['local'];
+
+
               echo "
-            
-        <tr>
-            <td>$rmalu</td>
-            <td>$nomealu</td>
-            <td>$nometur</td>
-            <td>$data</td>
-            <td>$local</td>
-            <td><a href=\"editar.php?codigo=$rmalu\">[Editar]</a></td>
-            <td><a href=\"excluir.php?codigo=$rmalu\">[Excluir]</a></td>
-        </tr>";
+                <tr>
+                  <td>$rmalu</td>
+                  <td>$nomealu</td>
+                  <td>$nometur</td>
+                  <td>$dataFormatada</td>
+                  <td>$local</td>
+                  <td><a href=\" ./ConsultarVisita.php?rmalu=$rmalu&idvisita=$idvisita\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">Consultar</a></td>
+                </tr>
+              ";
             }
             ?>
           </tbody>

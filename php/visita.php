@@ -48,7 +48,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $local = $inputData['local']; // Local vindo do aplicativo React Native
 
             // Corrigir o número de parâmetros no bind_param
-            $stmtVisita->bind_param("dsssssssi", $cdx, $cdy, $rev, $dataVisita, $horaVisita, $pontfoto, $userId, $rmprof, $local);
+            $stmtVisita->bind_param("dssssssss", $cdx, $cdy, $rev, $dataVisita, $horaVisita, $pontfoto, $userId, $rmprof, $local);
             $stmtVisita->execute();
             $visitaId = $stmtVisita->insert_id; // Pegando o id da visita inserida
 

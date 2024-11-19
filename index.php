@@ -65,7 +65,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
               <a class="nav-link" href="./php/classes.php">Classes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./html/visitas.html">Visitas</a>
+              <a class="nav-link" href="./php/listarVisitas.php">Visitas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="php/logout.php">Sair</a>
@@ -79,13 +79,13 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
 
   <!-- MAIN -->
   <main class="px-4 py-5 my-5 text-center d-flex flex-column justify-content-center">
-    <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeprof;?>!</h1>
+    <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeprof; ?>!</h1>
     <div class="col-lg-6 mx-auto">
       <div class="card text-white shadow-sm" style="background-color: #001f3f">
         <div class="card-body">
           <h5 class="card-title">Revisões em pendência:</h5>
           <p class="card-text fs-4">0</p>
-          <a href="./html/visitas.html" class="btn btn-outline-light">VER MAIS</a>
+          <a href="./php/listarVisitas.php" class="btn btn-outline-light">VER MAIS</a>
         </div>
       </div>
     </div>
