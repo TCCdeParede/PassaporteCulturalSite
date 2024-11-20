@@ -89,7 +89,7 @@
             <?php
             include "conexao.php";
 
-            $sqlcode = "SELECT * FROM visita";
+            $sqlcode = "SELECT * FROM visita WHERE rev = 'Pendente'";
             $sqlquery = $conexao->query($sqlcode);
 
             while ($visita = $sqlquery->fetch_assoc()) {

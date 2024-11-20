@@ -109,11 +109,11 @@ $rmalu = $_GET['rmalu'];
           ";
 
           // Calculando status
-          $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita";
+          $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Pendente'";
           $totalVisitas_query = $conexao->query($sqlcode_totalVisitas);
           $totalVisitas = $totalVisitas_query->fetch_assoc()['total'];
 
-          $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita";
+          $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita WHERE rev = 'Pendente'";
           $posicao_query = $conexao->query($sqlcode_posicao);
 
           $posicaoAtual = 1;
@@ -204,7 +204,7 @@ $rmalu = $_GET['rmalu'];
         <!-- Data, Hora e Local -->
         <div class="mt-3 text-center">
           <?php
-          $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita'";
+          $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita' AND rev = 'Pendente'";
           $visitas_query = $conexao->query($sqlcode_visitas);
           $visita = $visitas_query->fetch_assoc();
           $data = $visita['data'];
@@ -433,7 +433,7 @@ $rmalu = $_GET['rmalu'];
     });
 
     function navigateTo(direction) {
-      const currentIdVisita = <?php echo $idvisita; ?>;
+      const currentIdVisita = <?php echo intval($idvisita); ?>;
       const rmalu = "<?php echo $rmalu; ?>";
 
       fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}&rmalu=${rmalu}`)
@@ -442,7 +442,10 @@ $rmalu = $_GET['rmalu'];
           if (data.success) {
             window.location.href = `?idvisita=${data.idvisita}&rmalu=${rmalu}`;
           } else {
-            console.log("Sem visitas adicionais nesta direção.");
+            document.getElementById("modalMessage").innerText = direction === "prev" ?
+              "Não há visitas pendentes anteriores." :
+              "Não há visitas pendentes posteriores.";
+            modal.style.display = "block";
           }
         })
         .catch((error) => console.error("Erro ao navegar:", error));

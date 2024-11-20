@@ -38,7 +38,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             // Definindo os parâmetros para a visita
             $cdx = $photos[0]['location']['latitude']; // Latitude
             $cdy = $photos[0]['location']['longitude']; // Longitude
-            $rev = $rev ? "yes" : "no"; // Revisado
+            $rev = ($rev === "Pendente") ? "Pendente" : "no"; // Revisado
             $dataVisita = $dataVisita; // Data da visita
             $horaVisita = $horaVisita; // Hora da visita
             $userId = $inputData['userId']; // Pegando o ID do usuário

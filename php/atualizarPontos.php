@@ -65,7 +65,7 @@ $update_stmt = $conexao->prepare($update_query);
 $update_stmt->bind_param("iis", $novoPontMes, $novoPontAno, $rmalu);
 $update_stmt->execute();
 
-$rev = "aceito";
+$rev = "Aceito";
 
 // UPDATE visita
 $update_queryVisita = "UPDATE visita SET rev = ? WHERE idfoto = ?";
