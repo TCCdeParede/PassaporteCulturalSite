@@ -18,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $userId = $inputData['userId'];
         $local = $inputData['local'];
         $photos = $inputData['photos'];
-        $pontfoto = $inputData['pontfoto'];
         $rev = $inputData['rev'];
         $rmprof = $inputData['rmprof'];
 
@@ -32,15 +31,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $horaVisita = $dataHora->format('H:i:s');
 
             // Inserir a visita
-            $sqlVisita = "INSERT INTO visita (cdx, cdy, rev, data, hora, pontfoto, rmalu, rmprof, local) 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sqlVisita = "INSERT INTO visita (cdx, cdy, rev, data, hora,  rmalu, rmprof, local) 
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmtVisita = $conexao->prepare($sqlVisita);
 
             // Definindo os parâmetros para a visita
             $cdx = $photos[0]['location']['latitude']; // Latitude
             $cdy = $photos[0]['location']['longitude']; // Longitude
             $rev = $rev ? "yes" : "no"; // Revisado
-            $pontfoto = 0; // Se necessário, substitua por um valor dinâmico
             $dataVisita = $dataVisita; // Data da visita
             $horaVisita = $horaVisita; // Hora da visita
             $userId = $inputData['userId']; // Pegando o ID do usuário
@@ -48,7 +46,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $local = $inputData['local']; // Local vindo do aplicativo React Native
 
             // Corrigir o número de parâmetros no bind_param
-            $stmtVisita->bind_param("dssssssss", $cdx, $cdy, $rev, $dataVisita, $horaVisita, $pontfoto, $userId, $rmprof, $local);
+            $stmtVisita->bind_param("dsssssss", $cdx, $cdy, $rev, $dataVisita, $horaVisita, $userId, $rmprof, $local);
             $stmtVisita->execute();
             $visitaId = $stmtVisita->insert_id; // Pegando o id da visita inserida
 
