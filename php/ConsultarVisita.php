@@ -212,6 +212,7 @@ $rmalu = $_GET['rmalu'];
           $hora = $visita['hora'];
           $horaFormatada = date("H:i", strtotime($hora));
           $local = $visita['local'];
+          $rev = $visita['rev'];
 
           $latitude = $visita['cdx'];
           $longitude = $visita['cdy'];
@@ -226,7 +227,7 @@ $rmalu = $_GET['rmalu'];
 
         <!-- Setas e Botões -->
         <div class="d-flex justify-content-between align-items-center mt-3">
-          <i class="bi bi-arrow-left fs-2"></i>
+          <i id="arrow-left" class="bi bi-arrow-left fs-2"></i>
           <div>
             <button
               class="btn btn-success buttonConsultarAceitar"
@@ -239,7 +240,7 @@ $rmalu = $_GET['rmalu'];
               Recusar
             </button>
           </div>
-          <i class="bi bi-arrow-right fs-2"></i>
+          <i id="arrow-right" class="bi bi-arrow-right fs-2"></i>
         </div>
 
         <!-- Campo de recusa (escondido inicialmente) -->
@@ -285,8 +286,31 @@ $rmalu = $_GET['rmalu'];
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 
+  <!-- SCRIPT MAPS -->
   <script>
-    // Obter o modal
+    function initMap() {
+      const coordenadas = {
+        lat: <?php echo $latitude; ?>,
+        lng: <?php echo $longitude; ?>
+      };
+
+      const mapa = new google.maps.Map(document.getElementById("map"), {
+        center: coordenadas,
+        zoom: 15,
+      });
+
+      new google.maps.Marker({
+        position: coordenadas,
+        map: mapa,
+        title: "Local da visita",
+      });
+    }
+    window.onload = initMap;
+  </script>
+  <!-- FIM SCRIPT MAPS -->
+
+  <!-- SCRIPT ACEITA/RECUSA -->
+  <script>
     var modal = document.getElementById("myModal");
 
     document
@@ -298,11 +322,38 @@ $rmalu = $_GET['rmalu'];
     document
       .getElementById("btnAceitar")
       .addEventListener("click", function() {
-        // Exibir modal com a mensagem
         document.getElementById("modalMessage").innerText = "Você aceitou.";
         modal.style.display = "block";
+
+        // Desabilitando botões
         document.getElementById("btnAceitar").setAttribute("disabled", "");
         document.getElementById("btnRecusar").setAttribute("disabled", "");
+
+        // Enviando dados via AJAX
+        const rmalu = <?php echo $rmalu ?>;
+        const local = "<?php echo $local ?>";
+        const rev = "<?php echo $rev ?>";
+        const idvisita = <?php echo $idvisita ?>;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "atualizarPontos.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.send("rmalu=" + rmalu + "&local=" + local + "&rev=" + rev + "&idvisita=" + idvisita);
+
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+
+            if (response.success) {
+              document.getElementById("modalMessage").innerText = "Pontuação atualizada com sucesso!";
+              modal.style.display = "block";
+            } else {
+              document.getElementById("modalMessage").innerText = "Erro ao processar a pontuação.";
+              modal.style.display = "block";
+            }
+          }
+        };
       });
 
     document
@@ -340,27 +391,35 @@ $rmalu = $_GET['rmalu'];
       }
     };
   </script>
+  <!-- SCRIPT ACEITA/RECUSA -->
 
+  <!-- SCRIPT NAVEGACAO VISITAS -->
   <script>
-    function initMap() {
-      const coordenadas = {
-        lat: <?php echo $latitude; ?>,
-        lng: <?php echo $longitude; ?>
-      };
+    document.getElementById("arrow-left").addEventListener("click", function() {
+      navigateTo("prev");
+    });
 
-      const mapa = new google.maps.Map(document.getElementById("map"), {
-        center: coordenadas,
-        zoom: 15,
-      });
+    document.getElementById("arrow-right").addEventListener("click", function() {
+      navigateTo("next");
+    });
 
-      new google.maps.Marker({
-        position: coordenadas,
-        map: mapa,
-        title: "Local da visita",
-      });
+    function navigateTo(direction) {
+      const currentIdVisita = <?php echo $idvisita; ?>;
+      const rmalu = "<?php echo $rmalu; ?>";
+
+      fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}&rmalu=${rmalu}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = `?idvisita=${data.idvisita}&rmalu=${rmalu}`;
+          } else {
+            console.log("Sem visitas adicionais nesta direção.");
+          }
+        })
+        .catch((error) => console.error("Erro ao navegar:", error));
     }
-    window.onload = initMap;
   </script>
+  <!-- FIM SCRIPT NAVEGACAO VISITAS -->
 </body>
 
 </html>

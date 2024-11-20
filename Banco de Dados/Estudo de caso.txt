@@ -75,7 +75,6 @@ CREATE TABLE IF NOT EXISTS visita (
     rev VARCHAR(8),
     data DATE NOT NULL,
     hora TIME NOT NULL,
-    pontfoto INT NOT NULL,
     rmalu INT NOT NULL,
     rmprof INT NOT NULL,
     local VARCHAR(50) NOT NULL,
