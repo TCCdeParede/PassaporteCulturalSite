@@ -365,17 +365,46 @@ $rmalu = $_GET['rmalu'];
             "Por favor, explique o motivo da recusa.";
           modal.style.display = "block";
         } else {
+          let motivoCapturado = motivo;
+
           document.getElementById("modalMessage").innerText =
             "Recusa enviada: " + motivo;
+
           modal.style.display = "block";
+
           document
             .querySelector(".form-control")
             .setAttribute("disabled", "");
+
           document
             .getElementById("btnEnviarRecusa")
             .setAttribute("disabled", "");
+
           document.getElementById("btnAceitar").setAttribute("disabled", "");
           document.getElementById("btnRecusar").setAttribute("disabled", "");
+
+          const rev = "<?php echo $rev ?>";
+          const idvisita = <?php echo $idvisita ?>;
+
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "visitaRecusada.php", true);
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+          xhr.send("rev=" + rev + "&idvisita=" + idvisita + "&motivo=" + encodeURIComponent(motivoCapturado));
+
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+
+              if (response.success) {
+                document.getElementById("modalMessage").innerText = "Visita recusada com sucesso!";
+                modal.style.display = "block";
+              } else {
+                document.getElementById("modalMessage").innerText = "Erro ao recusar a visita.";
+                modal.style.display = "block";
+              }
+            }
+          }
         }
       });
 
