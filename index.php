@@ -84,7 +84,19 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
       <div class="card text-white shadow-sm" style="background-color: #001f3f">
         <div class="card-body">
           <h5 class="card-title">Revisões em pendência:</h5>
-          <p class="card-text fs-4">0</p>
+          <p class="card-text fs-4">
+            <?php 
+            
+            include "php/conexao.php";
+
+            $sql = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Pendente'";
+            $sqlquery = $conexao->query($sql);
+            $visitasPendentes = $sqlquery->fetch_assoc()['total'];
+
+            echo "$visitasPendentes";
+            
+            ?>
+          </p>
           <a href="./php/listarVisitas.php" class="btn btn-outline-light">VER MAIS</a>
         </div>
       </div>
