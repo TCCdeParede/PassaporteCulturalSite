@@ -30,7 +30,7 @@ switch ($local) {
         $pontuacao = 0;
 }
 
-$query = "SELECT pontmes, pontano FROM alunos WHERE rmalu = ?";
+$query = "SELECT pontmes, pontano, nometur FROM alunos WHERE rmalu = ?";
 $stmt = $conexao->prepare($query);
 $stmt->bind_param("s", $rmalu);
 $stmt->execute();
@@ -38,10 +38,9 @@ $result = $stmt->get_result();
 $aluno = $result->fetch_assoc();
 
 $pontosAtualmente = $aluno['pontmes'];
-
 $pontosFaltando = 200 - $pontosAtualmente;
 
-if ($pontuacao > $pontosFaltando){
+if ($pontuacao > $pontosFaltando) {
     $pontuacao = $pontosFaltando;
 }
 
@@ -65,12 +64,31 @@ $update_stmt = $conexao->prepare($update_query);
 $update_stmt->bind_param("iis", $novoPontMes, $novoPontAno, $rmalu);
 $update_stmt->execute();
 
-$rev = "Aceito";
+$nometur = $aluno['nometur'];
 
-// UPDATE visita
-$update_queryVisita = "UPDATE visita SET rev = ? WHERE idfoto = ?";
+// Buscar a pontuação geral da sala
+$querySala = "SELECT pontgeral FROM turma WHERE nometur = ?";
+$stmtSala = $conexao->prepare($querySala);
+$stmtSala->bind_param("s", $nometur);
+$stmtSala->execute();
+$resultSala = $stmtSala->get_result();
+$sala = $resultSala->fetch_assoc();
+
+if ($sala) {
+    $novoPontGerais = $sala['pontgeral'] + $pontuacao;
+
+    // UPDATE turma
+    $update_queryTurma = "UPDATE turma SET pontgeral = ? WHERE nometur = ?";
+    $update_stmtTurma = $conexao->prepare($update_queryTurma);
+    $update_stmtTurma->bind_param("is", $novoPontGerais, $nometur);
+    $update_stmtTurma->execute();
+}
+
+// Atualizar o status da visita
+$update_queryVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
 $update_stmtVisita = $conexao->prepare($update_queryVisita);
-$update_stmtVisita->bind_param("ss", $rev, $idvisita);
+$update_stmtVisita->bind_param("s", $idvisita);
 $update_stmtVisita->execute();
 
 echo json_encode(['success' => true, 'message' => 'Pontuação atualizada com sucesso.']);
+?>
