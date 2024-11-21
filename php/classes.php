@@ -90,18 +90,18 @@
                 <div class="form-floating formFloatingCustom">
                     <select class="form-select selectCustom" id="classe" name="classe" aria-label="Floating label select example">
                         <option></option>
-                        <option value="1eaa" name="1eaa">1° ADM A</option>
-                        <option value="1eab" name="1eab">1° ADM B</option>
-                        <option value="1dsa" name="1dsa">1° DS A</option>
-                        <option value="1dsb" name="1dsb">1° DS B</option>
-                        <option value="2eaa" name="2eaa">2º ADM A</option>
-                        <option value="2eab" name="2eab">2º ADM B</option>
-                        <option value="2dsa" name="2dsa">2º DS A</option>
-                        <option value="2dsb" name="2dsb">2º DS B</option>
-                        <option value="3eaa" name="3eaa">3º ADM A</option>
-                        <option value="3eab" name="3eab">3º ADM B</option>
-                        <option value="3dsa" name="3dsa">3º DS A</option>
-                        <option value="3dsb" name="3DSB">3º DS B</option>
+                        <option value="1eaa" name="1eaa">1EAA</option>
+                        <option value="1eab" name="1eab">1EAB</option>
+                        <option value="1dsa" name="1dsa">1DSA</option>
+                        <option value="1dsb" name="1dsb">1DSB</option>
+                        <option value="2eaa" name="2eaa">2EAA</option>
+                        <option value="2eab" name="2eab">2EAB</option>
+                        <option value="2dsa" name="2dsa">2DSA</option>
+                        <option value="2dsb" name="2dsb">2DSB</option>
+                        <option value="3eaa" name="3eaa">3EAA</option>
+                        <option value="3eab" name="3eab">3EAB</option>
+                        <option value="3dsa" name="3dsa">3DSA</option>
+                        <option value="3dsb" name="3DSB">3DSB</option>
                     </select>
                     <label for="classe" class="labelSelectCustom">Selecione uma sala</label>
                 </div>
@@ -114,8 +114,8 @@
                             <th>RM</th>
                             <th>Nome</th>
                             <th>Email</th>
-                            <th>Pontos</th>
-                            <th colspan=" 2">Ação</th>
+                            <th>Pontos no mês</th>
+                            <th>Pontos no ano</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,6 +127,7 @@
                             $rmalu = $row['rmalu'];
                             $nomealu = $row['nomealu'];
                             $emailalu = $row['emailalu'];
+                            $pontmes = $row['pontmes'];
                             $pontano = $row['pontano'];
                             echo "
                         
@@ -134,9 +135,8 @@
                         <td>$rmalu</td>
                         <td>$nomealu</td>
                         <td>$emailalu</td>
+                        <td>$pontmes</td>
                         <td>$pontano</td>
-                        <td><a href=\"editar.php?codigo=$rmalu\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">[Editar]</a></td>
-                        <td><a href=\"excluir.php?codigo=$rmalu\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">[Excluir]</a></td>
                     </tr>";
                         }
                         ?>
