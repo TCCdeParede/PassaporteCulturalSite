@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS visita (
     idfoto INT AUTO_INCREMENT PRIMARY KEY,
     cdx DOUBLE NOT NULL,
     cdy DOUBLE NOT NULL,
-    rev VARCHAR(10) default "pendende",
+    rev VARCHAR(10) default "Pendente",
     data DATE NOT NULL,
     hora TIME NOT NULL,
     rmalu INT NOT NULL,

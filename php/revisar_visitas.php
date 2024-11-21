@@ -3,19 +3,51 @@ header("Content-Type: application/json");
 require_once 'conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Listar visitas pendentes
-    $query = "SELECT v.idfoto, v.data, v.hora, v.local, a.nomealu, v.rev 
-              FROM visita v 
-              JOIN alunos a ON v.rmalu = a.rmalu 
-              WHERE v.rev = 'Pendente'";
-    $result = $conn->query($query);
+    // Verificar se o rmalu foi passado
+    $rmalu = isset($_GET['rmalu']) ? $_GET['rmalu'] : null;
 
-    $visitas = [];
-    while ($row = $result->fetch_assoc()) {
-        $visitas[] = $row;
+    if ($rmalu) {
+        // Listar visitas pendentes do aluno específico
+        $query = "SELECT v.*, a.nomealu, v.motivo FROM visita v JOIN alunos a ON v.rmalu = a.rmalu WHERE v.rmalu = ?";
+        $stmt = $conexao->prepare($query);
+        $stmt->bind_param("s", $rmalu); // Passando o rmalu para a consulta
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $visitas = [];
+        while ($row = $result->fetch_assoc()) {
+            $pontos = 0;
+            switch ($row['local']) {
+                case 'Show':
+                case 'Teatro':
+                case 'Feira':
+                    $pontos = 20;
+                    break;
+                case 'Centro Histórico':
+                case 'Museu':
+                case 'Visita Técnica':
+                    $pontos = 15;
+                    break;
+                case 'Exposição':
+                case 'Cinema':
+                    $pontos = 10;
+                    break;
+                case 'Biblioteca':
+                case 'Evento Esportivo':
+                    $pontos = 5;
+                    break;
+                default:
+                    $pontos = 0;
+            }
+
+            $row['pontos'] = $pontos;
+            $visitas[] = $row;
+        }
+
+        echo json_encode(["status" => "sucesso", "data" => $visitas]);
+    } else {
+        echo json_encode(["status" => "erro", "message" => "rmalu não fornecido."]);
     }
-
-    echo json_encode(["status" => "sucesso", "data" => $visitas]);
     exit();
 }
 
@@ -23,12 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Atualizar status da visita
     $data = json_decode(file_get_contents("php://input"), true);
     $idfoto = $data['idfoto'];
-    $status = $data['status'];
+    $rev = $data['rev'];
 
     $query = "UPDATE visita SET rev = ? WHERE idfoto = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("si", $status, $idfoto);
-    
+    $stmt = $conexao->prepare($query);
+    $stmt->bind_param("si", $rev, $idfoto);
+
     if ($stmt->execute()) {
         echo json_encode(["status" => "sucesso", "message" => "Visita atualizada!"]);
     } else {
@@ -38,4 +70,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 echo json_encode(["status" => "erro", "message" => "Método inválido."]);
-?>
