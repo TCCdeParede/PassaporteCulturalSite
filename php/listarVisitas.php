@@ -5,51 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tela do Aluno</title>
   <!-- BOOTSTRAP CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
   <!-- BOOTSTRAP ICONS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <!-- CSS -->
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 
 <body>
   <!-- HEADER -->
-  <nav
-    class="navbar navbar-custom navbar-expand-lg border-body"
-    data-bs-theme="dark">
+  <nav class="navbar navbar-custom navbar-expand-lg border-body" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand fs-4" href="../index.php">Passaporte Cultural</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasScrolling"
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
         aria-controls="offcanvasScrolling">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
-        class="offcanvas offcanvas-custom offcanvas-start"
-        data-bs-scroll="true"
-        data-bs-backdrop="false"
-        tabindex="-1"
-        id="offcanvasScrolling"
-        aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas offcanvas-custom offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false"
+        tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <ul
-            class="navbar-nav w-100 d-flex justify-content-evenly gap-3 fs-5">
+          <ul class="navbar-nav w-100 d-flex justify-content-evenly gap-3 fs-5">
             <li class="nav-item">
               <a class="nav-link" aria-current="page" href="../index.php">Home</a>
             </li>
@@ -73,9 +52,9 @@
   <main class="p-4 my-4 text-center">
     <div class="col-lg-6 mx-auto">
       <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Visitas</h1>
-      <div class="table-responsive">
-        <table class="table table-hover table-bordered text-center align-middle">
-          <thead>
+      <div class="table-responsive mt-3">
+        <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table">
+          <thead class="sticky-top align-middle">
             <tr>
               <th scope="col">RM</th>
               <th scope="col">Nome</th>
@@ -92,29 +71,36 @@
             $sqlcode = "SELECT * FROM visita WHERE rev = 'Pendente'";
             $sqlquery = $conexao->query($sqlcode);
 
-            while ($visita = $sqlquery->fetch_assoc()) {
-              $rmalu = $visita['rmalu'];
+            if ($sqlquery->num_rows > 0) {
+              while ($visita = $sqlquery->fetch_assoc()) {
+                $rmalu = $visita['rmalu'];
 
-              $sqlcode_aluno = "SELECT nomealu, nometur FROM alunos WHERE rmalu = '$rmalu'";
-              $aluno_query = $conexao->query($sqlcode_aluno);
-              $aluno = $aluno_query->fetch_assoc();
+                $sqlcode_aluno = "SELECT nomealu, nometur FROM alunos WHERE rmalu = '$rmalu'";
+                $aluno_query = $conexao->query($sqlcode_aluno);
+                $aluno = $aluno_query->fetch_assoc();
 
-              $nomealu = $aluno['nomealu'];
-              $nometur = $aluno['nometur'];
-              $idvisita = $visita['idfoto'];
-              $data = $visita['data'];
-              $dataFormatada = date("d/m/Y", strtotime($data));
-              $local = $visita['local'];
+                $nomealu = $aluno['nomealu'];
+                $nometur = $aluno['nometur'];
+                $idvisita = $visita['idfoto'];
+                $data = $visita['data'];
+                $dataFormatada = date("d/m/Y", strtotime($data));
+                $local = $visita['local'];
 
-
+                echo "
+                  <tr>
+                    <td>$rmalu</td>
+                    <td>$nomealu</td>
+                    <td>$nometur</td>
+                    <td>$dataFormatada</td>
+                    <td>$local</td>
+                    <td><a href=\" ./ConsultarVisita.php?rmalu=$rmalu&idvisita=$idvisita\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">Consultar</a></td>
+                  </tr>
+                ";
+              }
+            } else {
               echo "
                 <tr>
-                  <td>$rmalu</td>
-                  <td>$nomealu</td>
-                  <td>$nometur</td>
-                  <td>$dataFormatada</td>
-                  <td>$local</td>
-                  <td><a href=\" ./ConsultarVisita.php?rmalu=$rmalu&idvisita=$idvisita\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">Consultar</a></td>
+                  <td colspan='6' class='text-center'>Nenhuma visita pendente encontrada</td>
                 </tr>
               ";
             }
@@ -128,8 +114,7 @@
 
   <!-- FOOTER -->
   <footer class="container">
-    <div
-      class="d-flex flex-wrap justify-content-center align-items-center py-1 border-top border-dark">
+    <div class="d-flex flex-wrap justify-content-center align-items-center py-1 border-top border-dark">
       <div class="col-md-12 text-center">
         <span class="mb-3 mb-md-0 text-secondary-emphasis">© 2024 Bunny Boys, Inc</span>
       </div>
@@ -146,8 +131,7 @@
   </div>
 
   <!-- BOOTSTRAP JS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 </body>

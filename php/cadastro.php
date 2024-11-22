@@ -22,7 +22,7 @@
 
   <!-- MAIN -->
   <main class="form-signin container-lg m-auto mt-4 align-content-center px-4">
-    <form id="cadastroForm" action="cadprofessor.php" method="post">
+    <form id="cadastroForm" action="cadprofessor.php" method="post" autocomplete="off">
       <h1 class="h3 mb-3 fw-normal">Cadastro</h1>
 
       <div class="mb-3 inputGroup">

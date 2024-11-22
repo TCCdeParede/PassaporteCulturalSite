@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conexao->begin_transaction();
 
         try {
-            // Inserir o aluno
             $sql = "INSERT INTO alunos (rmalu, nomealu, emailalu, alusenha, pontmes, pontano, nometur)
                     VALUES (?, ?, ?, ?, 0, 0, ?)";
             $stmt = $conexao->prepare($sql);
@@ -23,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 throw new Exception("Erro ao cadastrar aluno: " . $stmt->error);
             }
 
-            // Atualizar a quantidade de alunos na tabela turma
             $updateSql = "UPDATE turma SET qtdalu = qtdalu + 1 WHERE nometur = ?";
             $updateStmt = $conexao->prepare($updateSql);
             $updateStmt->bind_param("s", $nometur);
@@ -32,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 throw new Exception("Erro ao atualizar turma: " . $updateStmt->error);
             }
 
-            // Confirma a transação
             $conexao->commit();
             echo json_encode(["message" => "Aluno cadastrado com sucesso!"]);
 

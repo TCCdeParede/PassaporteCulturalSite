@@ -83,7 +83,7 @@ $conexao->close();
 
   <!-- MAIN -->
   <main class="form-signin container-lg m-auto d-flex flex-column justify-content-center px-4 h-75">
-    <form action="" method="post">
+    <form action="" method="post" autocomplete="off">
       <h1 class="h3 mb-3 fw-normal">Login</h1>
 
       <div class="mb-3 inputGroup">
