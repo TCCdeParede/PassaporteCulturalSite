@@ -208,11 +208,11 @@ span.titleLogin {
 }
 
 .custom-table tbody tr {
-  --bs-table-bg: #f5ead2;
+  --bs-table-bg: rgb(196, 221, 230);
 }
 
 .custom-table tbody tr:last-child {
-  height: auto; 
+  height: auto;
 }
 
 .custom-table tfoot {

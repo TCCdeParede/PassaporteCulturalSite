@@ -80,13 +80,13 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
   <!-- MAIN -->
   <main class="px-4 py-5 my-5 text-center d-flex flex-column justify-content-center">
     <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeprof; ?>!</h1>
-    <div class="col-lg-6 mx-auto">
-      <div class="card text-white shadow-sm" style="background-color: #001f3f">
+    <div class="col-md-6 mx-auto">
+      <div class="card text-white" style="background-color: #001f3f">
         <div class="card-body">
           <h5 class="card-title">Revisões em pendência:</h5>
           <p class="card-text fs-4">
-            <?php 
-            
+            <?php
+
             include "php/conexao.php";
 
             $sql = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Pendente'";
@@ -94,7 +94,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
             $visitasPendentes = $sqlquery->fetch_assoc()['total'];
 
             echo "$visitasPendentes";
-            
+
             ?>
           </p>
           <a href="./php/listarVisitas.php" class="btn btn-outline-light">VER MAIS</a>

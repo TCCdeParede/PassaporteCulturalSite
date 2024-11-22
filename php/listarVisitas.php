@@ -54,7 +54,7 @@
       <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Visitas</h1>
       <div class="table-responsive mt-3">
         <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table">
-          <thead class="sticky-top align-middle">
+          <thead class="sticky-top text-center">
             <tr>
               <th scope="col">RM</th>
               <th scope="col">Nome</th>
@@ -113,7 +113,7 @@
   <!-- FIM MAIN -->
 
   <!-- FOOTER -->
-  <footer class="container">
+  <footer class="container pb-0">
     <div class="d-flex flex-wrap justify-content-center align-items-center py-1 border-top border-dark">
       <div class="col-md-12 text-center">
         <span class="mb-3 mb-md-0 text-secondary-emphasis">© 2024 Bunny Boys, Inc</span>
