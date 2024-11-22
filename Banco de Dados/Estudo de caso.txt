@@ -95,4 +95,4 @@ INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
 
 INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha, nvauto) VALUES (22513,'Laelson Mota','manolala.mota@etec.sp.gov.br','cafeteira157',1);
 
-INSERT INTO turma (nometur, sala, pontgeral, qtdalu, rmprof) VALUES ('3DSB',11,780,39,22513);
+INSERT INTO turma (nometur, pontgeral, qtdalu, rmprof) VALUES ('3DSB',780,39,22513);

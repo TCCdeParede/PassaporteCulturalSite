@@ -2,10 +2,11 @@
 include "conexao.php";
 
 // Dados passados pelo AJAX
-$rmalu = $_POST['rmalu'];
-$local = $_POST['local'];
-$rev = $_POST['rev'];
-$idvisita = $_POST['idvisita'];
+$data = json_decode(file_get_contents('php://input'), true);
+$rmalu = $data['rmalu'];
+$local = $data['local'];
+$rev = $data['rev'];
+$idvisita = $data['idvisita'];
 
 switch ($local) {
     case 'Show':
@@ -64,6 +65,12 @@ $update_stmt = $conexao->prepare($update_query);
 $update_stmt->bind_param("iis", $novoPontMes, $novoPontAno, $rmalu);
 $update_stmt->execute();
 
+// UPDATE visita
+$update_queryVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
+$update_stmtVisita = $conexao->prepare($update_queryVisita);
+$update_stmtVisita->bind_param("s", $idvisita);
+$update_stmtVisita->execute();
+
 $nometur = $aluno['nometur'];
 
 // Buscar a pontuação geral da sala
@@ -84,11 +91,10 @@ if ($sala) {
     $update_stmtTurma->execute();
 }
 
-// Atualizar o status da visita
-$update_queryVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
-$update_stmtVisita = $conexao->prepare($update_queryVisita);
-$update_stmtVisita->bind_param("s", $idvisita);
-$update_stmtVisita->execute();
-
-echo json_encode(['success' => true, 'message' => 'Pontuação atualizada com sucesso.']);
+echo json_encode([
+    'success' => true,
+    'message' => 'Pontuação atualizada com sucesso.',
+    'novoPontMes' => $novoPontMes,
+    'novoPontAno' => $novoPontAno
+]);
 ?>

@@ -100,12 +100,14 @@ $rmalu = $_GET['rmalu'];
           $nomealu = $aluno['nomealu'];
           $nometur = $aluno['nometur'];
           $pontmes = $aluno['pontmes'];
+          $pontano = $aluno['pontano'];
 
           echo "
           <p>RM: $rmalu</p>
           <p>Nome: $nomealu</p>
           <p>Turma: $nometur</p>
-          <p>Pontos: $pontmes</p>
+          <p id='pontMes'>Pontos no mês: $pontmes</p>
+          <p id='pontAno'>Pontos no ano: $pontano</p>
           ";
 
           // Calculando status
@@ -311,14 +313,45 @@ $rmalu = $_GET['rmalu'];
 
   <!-- SCRIPT ACEITA/RECUSA -->
   <script>
+    function aceitarVisita(idvisita, rmalu, local) {
+      // Enviar dados ao servidor para aceitar a visita e atualizar os pontos
+      const data = {
+        idvisita: idvisita,
+        rmalu: rmalu,
+        local: local,
+        rev: 'Aceito'
+      };
+
+      fetch('atualizarPontos.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Atualiza a pontuação exibida na página
+            const novosPontosMes = data.novoPontMes;
+            const novosPontosAno = data.novoPontAno;
+
+            // Atualiza os elementos da página
+            document.getElementById('pontMes').textContent = `Pontos no mês: ${novosPontosMes}`;
+            document.getElementById('pontAno').textContent = `Pontos no ano: ${novosPontosAno}`;
+
+            // Atualizar a classe ou texto da visita (caso necessário)
+            alert("Visita aceita e pontos atualizados com sucesso!");
+          } else {
+            alert(data.message);
+          }
+        })
+        .catch(error => console.error('Erro ao aceitar visita:', error));
+    }
+
     var modal = document.getElementById("myModal");
 
-    document
-      .getElementById("btnRecusar")
-      .addEventListener("click", function() {
-        document.getElementById("recusaField").style.display = "block";
-      });
-
+    // Visita aceita  
     document
       .getElementById("btnAceitar")
       .addEventListener("click", function() {
@@ -335,25 +368,14 @@ $rmalu = $_GET['rmalu'];
         const rev = "<?php echo $rev ?>";
         const idvisita = <?php echo $idvisita ?>;
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "atualizarPontos.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        aceitarVisita(idvisita, rmalu, local);
+      });
 
-        xhr.send("rmalu=" + rmalu + "&local=" + local + "&rev=" + rev + "&idvisita=" + idvisita);
-
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-
-            if (response.success) {
-              document.getElementById("modalMessage").innerText = "Pontuação atualizada com sucesso!";
-              modal.style.display = "block";
-            } else {
-              document.getElementById("modalMessage").innerText = "Erro ao processar a pontuação.";
-              modal.style.display = "block";
-            }
-          }
-        };
+    // Visita recusada
+    document
+      .getElementById("btnRecusar")
+      .addEventListener("click", function() {
+        document.getElementById("recusaField").style.display = "block";
       });
 
     document
@@ -434,13 +456,16 @@ $rmalu = $_GET['rmalu'];
 
     function navigateTo(direction) {
       const currentIdVisita = <?php echo intval($idvisita); ?>;
-      const rmalu = "<?php echo $rmalu; ?>";
 
-      fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}&rmalu=${rmalu}`)
+      fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}`)
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            window.location.href = `?idvisita=${data.idvisita}&rmalu=${rmalu}`;
+            const {
+              idvisita,
+              rmalu
+            } = data;
+            window.location.href = `?idvisita=${idvisita}&rmalu=${rmalu}`;
           } else {
             document.getElementById("modalMessage").innerText = direction === "prev" ?
               "Não há visitas pendentes anteriores." :

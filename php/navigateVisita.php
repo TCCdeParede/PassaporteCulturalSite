@@ -1,23 +1,30 @@
 <?php
-
 include "conexao.php";
 
-$direction = $_GET['direction'];
-$currentId = intval($_GET['currentId']);
-$rmalu = $_GET['rmalu'];
+// Configurar o cabeçalho para JSON
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$direction = $_GET['direction'] ?? null;
+$currentId = intval($_GET['currentId'] ?? 0);
+
+if (!$direction || $currentId === 0) {
+    echo json_encode(['success' => false, 'message' => 'Parâmetros inválidos']);
+    exit;
+}
 
 if ($direction === 'prev') {
-    // Busca a visita pendente anterior à atual
     $sql = "
-        SELECT idfoto 
+        SELECT idfoto, rmalu
         FROM visita 
         WHERE idfoto < $currentId AND rev = 'Pendente' 
         ORDER BY idfoto DESC 
         LIMIT 1";
 } elseif ($direction === 'next') {
-    // Busca a visita pendente posterior à atual
     $sql = "
-        SELECT idfoto 
+        SELECT idfoto, rmalu
         FROM visita 
         WHERE idfoto > $currentId AND rev = 'Pendente' 
         ORDER BY idfoto ASC 
@@ -29,14 +36,18 @@ if ($direction === 'prev') {
 
 $result = $conexao->query($sql);
 
+if (!$result) {
+    echo json_encode(['success' => false, 'message' => 'Erro na consulta SQL: ' . $conexao->error]);
+    exit;
+}
+
 if ($result->num_rows > 0) {
-    // Se encontrar uma visita pendente na direção solicitada
     $row = $result->fetch_assoc();
-    echo json_encode(['success' => true, 'idvisita' => $row['idfoto']]);
-} else {
-    // Caso não existam visitas pendentes na direção especificada
     echo json_encode([
-        'success' => false,
-        'message' => 'Não há visitas pendentes na direção selecionada.'
+        'success' => true,
+        'idvisita' => $row['idfoto'],
+        'rmalu' => $row['rmalu']
     ]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Não há visitas pendentes na direção selecionada.']);
 }

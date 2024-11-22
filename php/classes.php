@@ -69,31 +69,31 @@
                     <label for="classe" class="labelSelectCustom">Selecione uma sala</label>
                 </div>
             </form>
+            <h3 class="mt-3">
+                <?php
+                $options = [
+                    "1eaa" => "1º ADM A",
+                    "1eab" => "1° ADM B",
+                    "1dsa" => "1° DS A",
+                    "1dsb" => "1° DS B",
+                    "2eaa" => "2º ADM A",
+                    "2eab" => "2º ADM B",
+                    "2dsa" => "2º DS A",
+                    "2dsb" => "2º DS B",
+                    "3eaa" => "3º ADM A",
+                    "3eab" => "3º ADM B",
+                    "3dsa" => "3º DS A",
+                    "3dsb" => "3º DS B"
+                ];
+
+                $sala = $_GET['classe'] ?? '';
+                $nomeSala = $options[$sala] ?? '';
+
+                echo $nomeSala;
+                ?>
+            </h3>
             <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
                 <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table caption-top">
-                    <caption class="h3">
-                        <?php
-                        $options = [
-                            "1eaa" => "1º ADM A",
-                            "1eab" => "1° ADM B",
-                            "1dsa" => "1° DS A",
-                            "1dsb" => "1° DS B",
-                            "2eaa" => "2º ADM A",
-                            "2eab" => "2º ADM B",
-                            "2dsa" => "2º DS A",
-                            "2dsb" => "2º DS B",
-                            "3eaa" => "3º ADM A",
-                            "3eab" => "3º ADM B",
-                            "3dsa" => "3º DS A",
-                            "3dsb" => "3º DS B"
-                        ];
-
-                        $sala = $_GET['classe'] ?? '';
-                        $nomeSala = $options[$sala] ?? '';
-
-                        echo $nomeSala;
-                        ?>
-                    </caption>
                     <thead class="sticky-top align-middle">
                         <tr>
                             <th rowspan="2" scope="col">RM</th>
