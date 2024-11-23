@@ -1,47 +1,71 @@
 <?php
-// Conexão com o banco de dados
-include 'conexao.php';
+session_start();
+include 'conexao.php'; // Conexão com o banco de dados
 
-// Verifica se o formulário foi enviado
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Receber dados do formulário e validar
-    $rmprof = $_POST['inputRM'] ?? '';
-    $nomeprof = $_POST['inputNome'] ?? '';
-    $emailprof = $_POST['inputEmail'] ?? '';
-    $profsenha = $_POST['inputPassword'] ?? '';
+// Ativar exibição de erros para depuração
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-    // Verificar se os campos estão preenchidos
-    if (!empty($rmprof) && !empty($nomeprof) && !empty($emailprof) && !empty($profsenha)) {
-        // Inserir dados na tabela de professores
-        $sql = "INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha, nvauto) VALUES (?, ?, ?, ?, 1)";
+// Receber dados do formulário
+$rm = trim($_POST['rm'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$nome = trim($_POST['nome'] ?? '');
+$senha = trim($_POST['senha'] ?? '');
 
-        // Preparar a declaração
-        $stmt = $conexao->prepare($sql);
-
-        if ($stmt) {
-            // Bind dos parâmetros
-            $stmt->bind_param("isss", $rmprof, $nomeprof, $emailprof, $profsenha);
-
-            // Executar a declaração
-            if ($stmt->execute()) {
-                header("Location: cadastro.php?status=success&message=Cadastro%20realizado%20com%20sucesso!");
-                exit();
-            } else {
-                header("Location: cadastro.php?status=error&message=" . urlencode("Erro: " . $stmt->error));
-                exit();
-            }
-
-            // Fechar a declaração
-            $stmt->close();
-        } else {
-            header("Location: cadastro.php?status=error&message=" . urlencode("Erro na preparação da consulta: " . $conexao->error));
-            exit();
-        }
-    } else {
-        header("Location: cadastro.php?status=error&message=" . urlencode("Por favor, preencha todos os campos."));
-        exit();
-    }
+// Verificar se todos os campos foram preenchidos
+if (empty($rm) || empty($email) || empty($nome) || empty($senha)) {
+    echo json_encode(['status' => 'error', 'message' => 'Preencha todos os campos.']);
+    exit();
 }
 
-// Fechar a conexão
+// Validação do RM: deve conter exatamente 5 dígitos
+if (!preg_match('/^\d{5}$/', $rm)) {
+    echo json_encode(['status' => 'error', 'message' => 'O RM deve conter exatamente 5 dígitos.']);
+    exit();
+}
+
+// Validação da senha: mínimo de 8 caracteres
+if (strlen($senha) < 8) {
+    echo json_encode(['status' => 'error', 'message' => 'A senha deve ter pelo menos 8 caracteres.']);
+    exit();
+}
+
+// Verificar se o RM ou e-mail já existem
+$sql_check = "SELECT rmprof, emailprof FROM professor WHERE rmprof = ? OR emailprof = ?";
+$stmt_check = $conexao->prepare($sql_check);
+$stmt_check->bind_param("is", $rm, $email);
+$stmt_check->execute();
+$stmt_check->store_result();
+
+if ($stmt_check->num_rows > 0) {
+    echo json_encode(['status' => 'error', 'message' => 'RM ou e-mail já cadastrado.']);
+    $stmt_check->close();
+    $conexao->close();
+    exit();
+}
+$stmt_check->close();
+
+// Criptografar a senha
+$senha_hashed = password_hash($senha, PASSWORD_BCRYPT);
+
+// Inserir o novo professor
+$sql_insert = "INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha) VALUES (?, ?, ?, ?)";
+$stmt_insert = $conexao->prepare($sql_insert);
+
+if (!$stmt_insert) {
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao preparar consulta: ' . $conexao->error]);
+    $conexao->close();
+    exit();
+}
+
+$stmt_insert->bind_param("isss", $rm, $nome, $email, $senha_hashed);
+
+if ($stmt_insert->execute()) {
+    echo json_encode(['status' => 'success', 'message' => 'Professor cadastrado com sucesso!']);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao cadastrar professor: ' . $stmt_insert->error]);
+}
+
+$stmt_insert->close();
 $conexao->close();
+exit();

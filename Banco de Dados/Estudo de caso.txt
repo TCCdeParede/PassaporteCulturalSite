@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS professor (
  rmprof INT PRIMARY KEY NOT NULL,
  nomeprof VARCHAR(255) NOT NULL,
  emailprof VARCHAR(50) NOT NULL,
- profsenha VARCHAR(12) NOT NULL,
+ profsenha VARCHAR(255) NOT NULL,
  nvauto INT NOT NULL
 );
 
