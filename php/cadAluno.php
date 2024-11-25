@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $alusenha = $_POST['alusenha'];
         $nometur = $_POST['nometur'];
 
+        
+
         // Inicia uma transação para garantir integridade
         $conexao->begin_transaction();
 

@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS alunos (
  rmalu INT PRIMARY KEY NOT NULL,
  nomealu VARCHAR(255) NOT NULL,
  emailalu VARCHAR(50) NOT NULL,
+ fotoalu INT NOT NULL,
  alusenha VARCHAR(12) NOT NULL,
  pontmes INT NOT NULL DEFAULT 0,
  pontano INT NOT NULL DEFAULT 0,
@@ -96,3 +97,5 @@ INSERT INTO admin (admid, admsenha) VALUES ('admin','admin');
 INSERT INTO professor (rmprof, nomeprof, emailprof, profsenha, nvauto) VALUES (22513,'Laelson Mota','manolala.mota@etec.sp.gov.br','cafeteira157',1);
 
 INSERT INTO turma (nometur, pontgeral, qtdalu, rmprof) VALUES ('3DSB',780,39,22513);
+
+ALTER TABLE alunos ADD CONSTRAINT unique_email UNIQUE (emailalu);
