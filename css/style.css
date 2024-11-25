@@ -48,10 +48,16 @@ body {
 
 /* MODAL STYLES */
 
+body.modal-active {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 .modal {
   display: none; /* Escondido por padrão */
   position: fixed; /* Fica fixo na tela */
-  z-index: 1; /* Fica em cima de outros elementos */
+  z-index: 9999; /* Fica em cima de outros elementos */
   left: 0;
   top: 0;
   width: 100%; /* Largura total da tela */
@@ -230,13 +236,13 @@ span.titleLogin {
 .sticky-top {
   position: sticky;
   top: 0;
-  z-index: 1020;
+  z-index: 900;
 }
 
 .sticky-bottom {
   position: sticky;
   bottom: 0;
-  z-index: 1020;
+  z-index: 900;
 }
 
 /* ConsultarVisita STYLE */

@@ -2,15 +2,17 @@
 session_start();
 
 // Verifica se o usuário está logado
-if ((!isset($_SESSION['rmprof'])) && (!isset($_SESSION['admid']))) {
+if ((!isset($_SESSION['tipoLogin']))) {
   header("Location: php/login.php");
   exit();
 }
 
-if ($_SESSION['tipoLogin'] == 'administrador') {
+$isAdmin = $_SESSION['tipoLogin'] === 'administrador';
+
+if($isAdmin){
   $nomeUsuario = 'Administrador';
 } else {
-  $nomeUsuario = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)';
+  $nomeUsuario = $_SESSION['nomeprof'];
 }
 
 ?>

@@ -1,3 +1,15 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION["tipoLogin"])) {
+    header("Location: ./logout.php");
+    exit();
+}
+
+$isAdmin = $_SESSION['tipoLogin'] === 'administrador';
+
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -45,6 +57,7 @@
         </div>
     </nav>
     <!-- FIM HEADER -->
+
     <!-- MAIN -->
     <main class="p-4 my-4 text-center">
         <div class="col-lg-8 mx-auto">
@@ -101,6 +114,9 @@
                             <th rowspan="2" scope="col">Email</th>
                             <th rowspan="1" colspan="2" scope="colgroup">Pontuação no mês:</th>
                             <th rowspan="2" scope="col">Pontos no ano</th>
+                            <?php if ($isAdmin) {
+                                echo "<th rowspan='2' colspan='2' scope='col'>Ações</th>";
+                            } ?>
                         </tr>
                         <tr>
                             <th>Passado</th>
@@ -123,10 +139,17 @@
                         }
 
                         if (empty($classe)) {
-                            echo "
+                            if ($isAdmin) {
+                                echo "
+                                    <tr>
+                                        <td colspan='8' class='text-center'>Selecione uma sala</td>
+                                    </tr>";
+                            } else {
+                                echo "
                                     <tr>
                                         <td colspan='6' class='text-center'>Selecione uma sala</td>
                                     </tr>";
+                            }
                         } else {
                             $query = mysqli_query($conexao, "SELECT a.rmalu, a.nomealu, a.emailalu, a.pontmes AS pontos_atual,
                             COALESCE(SUM(
@@ -173,13 +196,30 @@
                                             <td>$pontosAnterior</td>
                                             <td>$pontosAtual</td>
                                             <td>$pontano</td>
-                                        </tr>";
+                                        ";
+
+                                    if ($isAdmin) {
+                                        echo "<td>
+                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
+                                            </td>
+                                            <td>
+                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
+                                            </td>";
+                                    }
+                                    echo "</tr>";
                                 }
                             } else {
-                                echo "
+                                if ($isAdmin) {
+                                    echo "
                                         <tr>
-                                            <td colspan='6' class='text-center'>Nenhum aluno encontrado</td>
+                                            <td colspan='8' class='text-center'>Nenhum aluno encontrado</td>
                                         </tr>";
+                                } else {
+                                    echo "
+                                    <tr>
+                                        <td colspan='6' class='text-center'>Nenhum aluno encontrado</td>
+                                    </tr>";
+                                }
                             }
                         }
                         ?>
@@ -190,16 +230,28 @@
                         $turma_query = $conexao->query($sqlcode_turma);
                         $turma = $turma_query->fetch_assoc();
                         $pontjust = $turma['pontjust'] ?? "";
-                        echo "
-                                    <tr>
-                                        <th colspan=5 scope='row'>Pontuação da sala no ano: </th>
-                                        <td>$pontjust</td>
-                                    </tr>
+                        if ($isAdmin) {
+                            echo "
+                                <tr>
+                                    <th colspan='6' scope='row'>Pontuação da sala no ano: </th>
+                                    <td colspan='2'>$pontjust</td>
+                                </tr>
                                 ";
+                        } else {
+                            echo "
+                                <tr>
+                                    <th colspan=5 scope='row'>Pontuação da sala no ano: </th>
+                                    <td>$pontjust</td>
+                                </tr>
+                        ";
+                        }
                         ?>
                     </tfoot>
                 </table>
             </div>
+            <?php if ($isAdmin): ?>
+                <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar Aluno</button>
+            <?php endif; ?>
         </div>
     </main>
     <!-- FIM MAIN -->
@@ -213,6 +265,135 @@
         </footer>
     </div>
     <!-- FIM FOOTER -->
+
+    <!-- MODAL -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <div id="modalBody">
+                <!-- O conteúdo do modal será dinamicamente preenchido -->
+            </div>
+            <div id="modalFooter" class="mt-2 d-flex justify-content-evenly">
+                <button id="modalConfirmBtn" class="btn btn-primary buttonCustom">Confirmar</button>
+                <button id="modalCancelBtn" class="btn btn-secondary buttonCustom" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <!-- FIM MODAL -->
+
+    <!-- ABRIR/FECHAR MODAL -->
+    <script>
+        let currentAction = null;
+        let currentStudentId = null;
+
+        function openModal(action, studentData = null) {
+            currentAction = action;
+            document.body.classList.add('modal-active');
+            const modal = document.getElementById("myModal");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalBody = document.getElementById("modalBody");
+            const modalConfirmBtn = document.getElementById("modalConfirmBtn");
+
+            modalBody.innerHTML = "";
+            modalConfirmBtn.onclick = handleModalConfirm;
+
+            if (action === "edit") {
+                modalTitle.textContent = "Editar Aluno";
+                modalBody.innerHTML = `
+                <label for="rmalu">RM:</label>
+                <input class='form-control' type="text" id="rmalu" value="${studentData.rmalu}" disabled>
+                <label for="nomealu">Nome:</label>
+                <input class='form-control' type="text" id="nomealu" value="${studentData.nomealu}">
+                <label for="emailalu">Email:</label>
+                <input class='form-control' type="email" id="emailalu" value="${studentData.emailalu}">
+                <label for="nometur">Turma:</label>
+                <input class='form-control' type="text" id="nometur" value="${studentData.nometur}">
+        `;
+            } else if (action === "create") {
+                modalTitle.textContent = "Criar Novo Aluno";
+                modalBody.innerHTML = `
+                <label for="rmalu">RM:</label>
+                <input class='form-control' type="text" id="rmalu">
+                <label for="nomealu">Nome:</label>
+                <input class='form-control' type="text" id="nomealu">
+                <label for="emailalu">Email:</label>
+                <input class='form-control' type="email" id="emailalu">
+                <label for="nometur">Turma:</label>
+                <input class='form-control' type="text" id="nometur">
+        `;
+            } else if (action === "delete") {
+                modalTitle.textContent = "Excluir Aluno";
+                modalBody.innerHTML = `<p>Tem certeza de que deseja excluir o registro do aluno de RM ${studentData.rmalu}?</p>`;
+                currentStudentId = studentData.rmalu;
+            }
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            document.body.classList.remove('modal-active');
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            currentAction = null;
+            currentStudentId = null;
+        }
+
+        function handleModalConfirm() {
+            if (currentAction === "edit" || currentAction === "create") {
+                const rmalu = document.getElementById("rmalu").value;
+                const nomealu = document.getElementById("nomealu").value;
+                const emailalu = document.getElementById("emailalu").value;
+                const nometur = document.getElementById("nometur").value;
+
+                const formData = new FormData();
+                formData.append("rmalu", rmalu);
+                formData.append("nomealu", nomealu);
+                formData.append("emailalu", emailalu);
+                formData.append("nometur", nometur);
+
+                const url = currentAction === "edit" ? "editarAluno.php" : "adicionarAluno.php";
+                fetch(url, {
+                        method: "POST",
+                        body: formData,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro:", error);
+                        alert("Ocorreu um erro ao tentar processar a requisição.");
+                    });
+            } else if (currentAction === "delete") {
+                fetch("deletarAluno.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: `rmalu=${encodeURIComponent(currentStudentId)}`,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            console.error('Erro: ', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro:", error);
+                        alert("Erro ao tentar excluir o aluno.");
+                    });
+            }
+
+            closeModal();
+        }
+    </script>
+    <!-- FIM ABRIR/FECHAR MODAL -->
 
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
