@@ -2,12 +2,17 @@
 session_start();
 
 // Verifica se o usuário está logado
-if (!isset($_SESSION['rmprof'])) {
+if ((!isset($_SESSION['rmprof'])) && (!isset($_SESSION['admid']))) {
   header("Location: php/login.php");
   exit();
 }
 
-$nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)';
+if ($_SESSION['tipoLogin'] == 'administrador') {
+  $nomeUsuario = 'Administrador';
+} else {
+  $nomeUsuario = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)';
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -79,7 +84,7 @@ $nomeprof = isset($_SESSION['nomeprof']) ? $_SESSION['nomeprof'] : 'Professor(a)
 
   <!-- MAIN -->
   <main class="px-4 py-5 my-5 text-center d-flex flex-column justify-content-center">
-    <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeprof; ?>!</h1>
+    <h1 class="display-5 fw-bold text-body-emphasis mb-5">Bem-vindo(a) <?php echo $nomeUsuario; ?>!</h1>
     <div class="col-md-6 mx-auto">
       <div class="card text-white" style="background-color: #001f3f">
         <div class="card-body">

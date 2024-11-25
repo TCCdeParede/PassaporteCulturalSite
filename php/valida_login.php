@@ -26,7 +26,7 @@ if ($tipoLogin === 'administrador') {
         exit();
     }
 
-    $stmt->bind_param("s", $rm);  
+    $stmt->bind_param("s", $rm);
     $stmt->execute();
     $stmt->bind_result($admid, $admsenha);
 
@@ -35,11 +35,12 @@ if ($tipoLogin === 'administrador') {
             // Senha correta
             $_SESSION['admid'] = $admid;
             $_SESSION['admin'] = true;
+            $_SESSION['tipoLogin'] = $tipoLogin;
 
             $stmt->close();
             $conexao->close();
 
-            header("Location: ../dashboardAdmin.php");
+            header("Location: ../index.php");
             exit();
         } else {
             // Senha inválida
@@ -83,6 +84,7 @@ if ($tipoLogin === 'administrador') {
         if (password_verify($senha, $profsenha)) {
             $_SESSION['rmprof'] = $rmprof;
             $_SESSION['nomeprof'] = $nomeprof;
+            $_SESSION['tipoLogin'] = $tipoLogin;
 
             $stmt->close();
             $conexao->close();
