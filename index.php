@@ -9,7 +9,7 @@ if ((!isset($_SESSION['tipoLogin']))) {
 
 $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
-if($isAdmin){
+if ($isAdmin) {
   $nomeUsuario = 'Administrador';
 } else {
   $nomeUsuario = $_SESSION['nomeprof'];
@@ -22,7 +22,7 @@ if($isAdmin){
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Passaporte Cultural - Professores</title>
+  <title>Passaporte Cultural | Página inicial</title>
   <!-- BOOTSTRAP -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -71,6 +71,15 @@ if($isAdmin){
             <li class="nav-item">
               <a class="nav-link" href="./php/classes.php">Classes</a>
             </li>
+            <?php
+              if ($isAdmin) {
+                echo '
+                <li class="nav-item">
+                  <a class="nav-link" href="./php/listarProfessores.php">Professores</a>
+                </li>
+              ';
+              }
+            ?>
             <li class="nav-item">
               <a class="nav-link" href="./php/listarVisitas.php">Visitas</a>
             </li>

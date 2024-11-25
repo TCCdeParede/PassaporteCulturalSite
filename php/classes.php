@@ -15,7 +15,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passaporte Cultural - Professores</title>
+    <title>Passaporte Cultural | Classes</title>
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -45,6 +45,15 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Classes</a>
                         </li>
+                        <?php
+                        if ($isAdmin) {
+                            echo '
+                                <li class="nav-item">
+                                    <a class="nav-link" href="./listarProfessores.php">Professores</a>
+                                </li>
+                            ';
+                        }
+                        ?>
                         <li class="nav-item">
                             <a class="nav-link" href="./listarVisitas.php">Visitas</a>
                         </li>
@@ -115,7 +124,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                             <th rowspan="1" colspan="2" scope="colgroup">Pontuação no mês:</th>
                             <th rowspan="2" scope="col">Pontos no ano</th>
                             <?php if ($isAdmin) {
-                                echo "<th rowspan='2' colspan='2' scope='col'>Ações</th>";
+                                echo "<th rowspan='2' colspan='2' scope='colgroup'>Ações</th>";
                             } ?>
                         </tr>
                         <tr>
@@ -310,7 +319,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 <input class='form-control' type="text" id="nometur" value="${studentData.nometur}">
         `;
             } else if (action === "create") {
-                modalTitle.textContent = "Criar Novo Aluno";
+                modalTitle.textContent = "Adicionar Novo Aluno";
                 modalBody.innerHTML = `
                 <label for="rmalu">RM:</label>
                 <input class='form-control' type="text" id="rmalu">

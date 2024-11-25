@@ -1,9 +1,21 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION["tipoLogin"])) {
+  header("Location: ./logout.php");
+  exit();
+}
+
+$isAdmin = $_SESSION['tipoLogin'] === 'administrador';
+
+?>
 <html lang="pt-br">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tela do Aluno</title>
+  <title>Passaporte Cultural | Listagem de visitas</title>
   <!-- BOOTSTRAP CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
@@ -35,6 +47,15 @@
             <li class="nav-item">
               <a class="nav-link" href="../php/classes.php">Classes</a>
             </li>
+            <?php
+            if ($isAdmin) {
+              echo '
+                <li class="nav-item">
+                    <a class="nav-link" href="./listarProfessores.php">Professores</a>
+                </li>
+            ';
+            }
+            ?>
             <li class="nav-item">
               <a class="nav-link active" href="#">Visitas</a>
             </li>
