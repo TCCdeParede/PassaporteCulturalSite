@@ -73,8 +73,8 @@ $update_stmtVisita->execute();
 
 $nometur = $aluno['nometur'];
 
-// Buscar a pontuação geral da sala
-$querySala = "SELECT pontgeral FROM turma WHERE nometur = ?";
+// Buscar a pontuação geral e mensal da sala
+$querySala = "SELECT pontgeral, pontmensal FROM turma WHERE nometur = ?";
 $stmtSala = $conexao->prepare($querySala);
 $stmtSala->bind_param("s", $nometur);
 $stmtSala->execute();
@@ -82,12 +82,13 @@ $resultSala = $stmtSala->get_result();
 $sala = $resultSala->fetch_assoc();
 
 if ($sala) {
-    $novoPontGerais = $sala['pontgeral'] + $pontuacao;
+    $novoPontGeral = $sala['pontgeral'] + $pontuacao;
+    $novoPontMensal = $sala['pontmensal'] + $pontuacao;
 
     // UPDATE turma
-    $update_queryTurma = "UPDATE turma SET pontgeral = ? WHERE nometur = ?";
+    $update_queryTurma = "UPDATE turma SET pontgeral = ?, pontmensal = ? WHERE nometur = ?";
     $update_stmtTurma = $conexao->prepare($update_queryTurma);
-    $update_stmtTurma->bind_param("is", $novoPontGerais, $nometur);
+    $update_stmtTurma->bind_param("iis", $novoPontGeral, $novoPontMensal, $nometur);
     $update_stmtTurma->execute();
 }
 
@@ -97,4 +98,3 @@ echo json_encode([
     'novoPontMes' => $novoPontMes,
     'novoPontAno' => $novoPontAno
 ]);
-?>

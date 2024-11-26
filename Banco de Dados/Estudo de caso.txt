@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS professor (
 -- Tabela da Turma
 CREATE TABLE IF NOT EXISTS turma (
  nometur VARCHAR(5) PRIMARY KEY NOT NULL,
+ ALTER TABLE `turma` ADD `pontoGeral` INT NOT NULL,
  pontgeral INT NOT NULL,
  qtdalu INT NOT NULL,
  pontjust INT GENERATED ALWAYS AS (((pontgeral / qtdalu) * (40 - qtdalu)) + pontgeral) VIRTUAL,

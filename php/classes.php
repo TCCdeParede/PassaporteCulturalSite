@@ -235,22 +235,31 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                     </tbody>
                     <tfoot class="sticky-bottom">
                         <?php
-                        $sqlcode_turma = "SELECT pontjust FROM turma WHERE nometur = '$classe'";
+                        $sqlcode_turma = "SELECT pontjust, pontmensal FROM turma WHERE nometur = '$classe'";
                         $turma_query = $conexao->query($sqlcode_turma);
                         $turma = $turma_query->fetch_assoc();
-                        $pontjust = $turma['pontjust'] ?? "";
+                        $pontjust = $turma['pontjust'] ?? "0";
+                        $pontmensal = $turma['pontmensal'] ?? "0";
                         if ($isAdmin) {
                             echo "
                                 <tr>
-                                    <th colspan='6' scope='row'>Pontuação da sala no ano: </th>
+                                    <th colspan='6' scope='row'>Pontuação geral da sala: </th>
                                     <td colspan='2'>$pontjust</td>
+                                </tr>
+                                <tr>
+                                    <th colspan='6' scope='row'>Pontuação da sala no mês: </th>
+                                    <td colspan='2'>$pontmensal</td>
                                 </tr>
                                 ";
                         } else {
                             echo "
                                 <tr>
-                                    <th colspan=5 scope='row'>Pontuação da sala no ano: </th>
-                                    <td>$pontjust</td>
+                                    <th colspan='5' scope='row'>Pontuação geral da sala: </th>
+                                    <td colspan='2'>$pontjust</td>
+                                </tr>
+                                <tr>
+                                    <th colspan='5' scope='row'>Pontuação da sala no mês: </th>
+                                    <td colspan='2'>$pontmensal</td>
                                 </tr>
                         ";
                         }
