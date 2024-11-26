@@ -47,11 +47,12 @@ CREATE TABLE IF NOT EXISTS professor (
 -- Tabela da Turma
 CREATE TABLE IF NOT EXISTS turma (
  nometur VARCHAR(5) PRIMARY KEY NOT NULL,
- ALTER TABLE `turma` ADD `pontoGeral` INT NOT NULL,
- pontgeral INT NOT NULL,
  qtdalu INT NOT NULL,
+ pontgeral INT NOT NULL DEFAULT 0,
  pontjust INT GENERATED ALWAYS AS (((pontgeral / qtdalu) * (40 - qtdalu)) + pontgeral) VIRTUAL,
- rmprof INT NOT NULL,
+ pontcompmensal INT NOT NULL DEFAULT 0,
+ pontcompgeral INT NOT NULL DEFAULT 0,
+ rmprof INT,
  FOREIGN KEY (rmprof) REFERENCES professor(rmprof) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -62,8 +63,10 @@ CREATE TABLE IF NOT EXISTS alunos (
  emailalu VARCHAR(50) NOT NULL,
  fotoalu INT NOT NULL,
  alusenha VARCHAR(12) NOT NULL,
- pontmes INT NOT NULL DEFAULT 0,
- pontano INT NOT NULL DEFAULT 0,
+ pontmesGeral INT NOT NULL DEFAULT 0,
+ pontanoGeral INT NOT NULL DEFAULT 0,
+ pontcompmes INT NOT NULL DEFAULT 0,
+ pontcompano INT NOT NULL DEFAULT 0,
  nometur VARCHAR(5) NOT NULL,
  FOREIGN KEY (nometur) REFERENCES turma(nometur) ON DELETE CASCADE ON UPDATE CASCADE
 );
