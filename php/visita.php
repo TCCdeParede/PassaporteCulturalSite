@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $local = $inputData['local'];
         $photos = $inputData['photos'];
         $rev = $inputData['rev'];
-        $rmprof = $inputData['rmprof'];
+        $rmprof = $inputData['rmprof'] ?? null;
 
         // Preparando para inserir na tabela visita
         $conexao->begin_transaction();
