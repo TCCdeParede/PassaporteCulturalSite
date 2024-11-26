@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "message" => "Login bem-sucedido",
             "nome" => $user['nomealu'], // Ajuste os nomes das colunas conforme seu banco
             "turma" => $user['nometur'],
-            "pontos" => $user['pontano'],
+            "pontos" => $user['pontanoGeral'],
             "rm" => $user['rmalu']
         ]);
     } else {
@@ -43,4 +43,3 @@ $conexao->close();
 
 // Limpar buffer
 ob_end_flush();
-?>
