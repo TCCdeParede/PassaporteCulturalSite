@@ -121,15 +121,17 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                             <th rowspan="2" scope="col">RM</th>
                             <th rowspan="2" scope="col">Nome</th>
                             <th rowspan="2" scope="col">Email</th>
-                            <th rowspan="1" colspan="2" scope="colgroup">Pontuação no mês:</th>
-                            <th rowspan="2" scope="col">Pontos no ano</th>
                             <?php if ($isAdmin) {
                                 echo "<th rowspan='2' colspan='2' scope='colgroup'>Ações</th>";
                             } ?>
+                            <th rowspan="1" colspan="2" scope="colgroup">Pontuação Geral:</th>
+                            <th rowspan="1" colspan="2" scope="colgroup">Pontuação a Computar:</th>
                         </tr>
                         <tr>
-                            <th>Passado</th>
-                            <th>Atual</th>
+                            <th>Anual</th>
+                            <th>Mês</th>
+                            <th>Anual</th>
+                            <th>Mês</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,136 +139,100 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                         include "conexao.php";
 
                         $classe = $_GET["classe"] ?? "";
-                        $mesAtual = date('m');
-                        $anoAtual = date('Y');
-                        $mesAnterior = $mesAtual - 1;
-                        $anoAnterior = $anoAtual - 1;
-
-                        if ($mesAnterior === 0) {
-                            $mesAnterior = 12;
-                            $anoAnterior -= 1;
-                        }
-
                         if (empty($classe)) {
                             if ($isAdmin) {
                                 echo "
-                                    <tr>
-                                        <td colspan='8' class='text-center'>Selecione uma sala</td>
-                                    </tr>";
+                    <tr>
+                        <td colspan='11' class='text-center'>Selecione uma sala</td>
+                    </tr>";
                             } else {
                                 echo "
-                                    <tr>
-                                        <td colspan='6' class='text-center'>Selecione uma sala</td>
-                                    </tr>";
+                    <tr>
+                        <td colspan='7' class='text-center'>Selecione uma sala</td>
+                    </tr>";
                             }
                         } else {
-                            $query = mysqli_query($conexao, "SELECT a.rmalu, a.nomealu, a.emailalu, a.pontmes AS pontos_atual,
-                            COALESCE(SUM(
-                                CASE
-                                    WHEN MONTH(v.data) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
-                                    AND YEAR(v.data) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) THEN
-                                        CASE
-                                            WHEN v.local IN ('Show', 'Teatro', 'Feira') THEN 20
-                                            WHEN v.local IN ('Centro Histórico', 'Museu', 'Visita Técnica') THEN 15
-                                            WHEN v.local IN ('Exposição', 'Cinema') THEN 10
-                                            WHEN v.local IN ('Biblioteca', 'Evento Esportivo') THEN 5
-                                            ELSE 0
-                                        END
-                                    ELSE 0
-                                END
-                            ), 0) AS pontos_anterior,
-                            a.pontano
-                        FROM
-                            alunos a
-                        LEFT JOIN
-                            visita v
-                        ON
-                            a.rmalu = v.rmalu
-                        WHERE
-                            a.nometur = '$classe'
-                        GROUP BY
-                            a.rmalu, a.nomealu, a.emailalu, a.pontmes, a.pontano
-                        ORDER BY
-                            a.nomealu ASC;");
+                            $query = mysqli_query($conexao, "
+                SELECT 
+                    a.rmalu, 
+                    a.nomealu, 
+                    a.emailalu, 
+                    a.pontanoGeralAluno, 
+                    a.pontmesGeralAluno, 
+                    a.pontcompanoAluno, 
+                    a.pontcompmesAluno
+                FROM alunos a
+                WHERE a.nometur = '$classe'
+                ORDER BY a.nomealu ASC
+            ");
 
                             if (mysqli_num_rows($query) > 0) {
                                 while ($row = mysqli_fetch_array($query)) {
                                     $rmalu = $row['rmalu'];
                                     $nomealu = $row['nomealu'];
                                     $emailalu = $row['emailalu'];
-                                    $pontosAtual = $row['pontos_atual'];
-                                    $pontosAnterior = $row['pontos_anterior'];
-                                    $pontano = $row['pontano'];
-                                    echo "
-                                        <tr>
-                                            <td>$rmalu</td>
-                                            <td>$nomealu</td>
-                                            <td>$emailalu</td>
-                                            <td>$pontosAnterior</td>
-                                            <td>$pontosAtual</td>
-                                            <td>$pontano</td>
-                                        ";
+                                    $pontGeralAno = $row['pontanoGeralAluno'];
+                                    $pontGeralMes = $row['pontmesGeralAluno'];
+                                    $pontCompAno = $row['pontcompanoAluno'];
+                                    $pontCompMes = $row['pontcompmesAluno'];
 
+                                    echo "
+                    <tr>
+                        <td>$rmalu</td>
+                        <td>$nomealu</td>
+                        <td>$emailalu</td>";
                                     if ($isAdmin) {
-                                        echo "<td>
-                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
-                                            </td>
-                                            <td>
-                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
-                                            </td>";
+                                        echo "
+                        <td>
+                            <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
+                        </td>
+                        <td>
+                            <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
+                        </td>";
                                     }
-                                    echo "</tr>";
+                                    echo "
+                        <td>$pontGeralAno</td>
+                        <td>$pontGeralMes</td>
+                        <td>$pontCompAno</td>
+                        <td>$pontCompMes</td>
+                    </tr>";
                                 }
                             } else {
-                                if ($isAdmin) {
-                                    echo "
-                                        <tr>
-                                            <td colspan='8' class='text-center'>Nenhum aluno encontrado</td>
-                                        </tr>";
-                                } else {
-                                    echo "
-                                    <tr>
-                                        <td colspan='6' class='text-center'>Nenhum aluno encontrado</td>
-                                    </tr>";
-                                }
+                                $colspan = $isAdmin ? 11 : 7;
+                                echo "
+                <tr>
+                    <td colspan='$colspan' class='text-center'>Nenhum aluno encontrado</td>
+                </tr>";
                             }
                         }
                         ?>
                     </tbody>
                     <tfoot class="sticky-bottom">
                         <?php
-                        $sqlcode_turma = "SELECT pontjust, pontmensal FROM turma WHERE nometur = '$classe'";
+                        $sqlcode_turma = "
+            SELECT pontcompmensalTurma, pontcompgeralTurma, pontmesGeralTurma, pontanualGeralTurma FROM turma WHERE nometur = '$classe'";
                         $turma_query = $conexao->query($sqlcode_turma);
                         $turma = $turma_query->fetch_assoc();
-                        $pontjust = $turma['pontjust'] ?? "0";
-                        $pontmensal = $turma['pontmensal'] ?? "0";
-                        if ($isAdmin) {
-                            echo "
-                                <tr>
-                                    <th colspan='6' scope='row'>Pontuação geral da sala: </th>
-                                    <td colspan='2'>$pontjust</td>
-                                </tr>
-                                <tr>
-                                    <th colspan='6' scope='row'>Pontuação da sala no mês: </th>
-                                    <td colspan='2'>$pontmensal</td>
-                                </tr>
-                                ";
-                        } else {
-                            echo "
-                                <tr>
-                                    <th colspan='5' scope='row'>Pontuação geral da sala: </th>
-                                    <td colspan='2'>$pontjust</td>
-                                </tr>
-                                <tr>
-                                    <th colspan='5' scope='row'>Pontuação da sala no mês: </th>
-                                    <td colspan='2'>$pontmensal</td>
-                                </tr>
-                        ";
-                        }
+                        $pontGeralMensalTurma = $turma["pontmesGeralTurma"] ?? "0";
+                        $pontGeralAnualTurma = $turma["pontanualGeralTurma"] ?? "0";
+                        $pontCompMensal = $turma['pontcompmensalTurma'] ?? "0";
+                        $pontCompGeral = $turma['pontcompgeralTurma'] ?? "0";
+
+                        $colspan = $isAdmin ? 5 : 3;
+                        echo "
+        <tr>
+            <th colspan='$colspan' scope='row'>Pontuação da Sala: </th>
+            <td>$pontGeralAnualTurma</td>
+            <td>$pontGeralMensalTurma</td>
+            <td>$pontCompGeral</td>
+            <td>$pontCompMensal</td>
+        </tr>";
                         ?>
                     </tfoot>
                 </table>
+
             </div>
+
             <?php if ($isAdmin): ?>
                 <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar Aluno</button>
             <?php endif; ?>

@@ -16,5 +16,3 @@ if ($update_stmtVisita->affected_rows > 0) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Falha ao recusar a visita.']);
 }
-
-?>

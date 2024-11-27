@@ -5,9 +5,9 @@ include "conexao.php";
 $data = json_decode(file_get_contents('php://input'), true);
 $rmalu = $data['rmalu'];
 $local = $data['local'];
-$rev = $data['rev'];
 $idvisita = $data['idvisita'];
 
+// Determinar a pontuação baseada no local
 switch ($local) {
     case 'Show':
     case 'Teatro':
@@ -31,70 +31,87 @@ switch ($local) {
         $pontuacao = 0;
 }
 
-$query = "SELECT pontmes, pontano, nometur FROM alunos WHERE rmalu = ?";
-$stmt = $conexao->prepare($query);
-$stmt->bind_param("s", $rmalu);
-$stmt->execute();
-$result = $stmt->get_result();
-$aluno = $result->fetch_assoc();
+// Buscar dados do aluno
+$queryAluno = "SELECT pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur FROM alunos WHERE rmalu = ?";
+$stmtAluno = $conexao->prepare($queryAluno);
+$stmtAluno->bind_param("i", $rmalu);
+$stmtAluno->execute();
+$resultAluno = $stmtAluno->get_result();
+$aluno = $resultAluno->fetch_assoc();
 
-$pontosAtualmente = $aluno['pontmes'];
-$pontosFaltando = 200 - $pontosAtualmente;
-
-if ($pontuacao > $pontosFaltando) {
-    $pontuacao = $pontosFaltando;
+if (!$aluno) {
+    echo json_encode(['success' => false, 'message' => 'Aluno não encontrado.']);
+    exit;
 }
+
+$pontosAtualmente = $aluno['pontcompmesAluno'];
+$pontosFaltando = 200 - $pontosAtualmente;
 
 $mesAtual = date("m");
 $ferias = [1, 7, 12];
 
-// Checando se é um mês de férias
-if (!in_array($mesAtual, $ferias) && ($aluno['pontmes'] + $pontuacao) > 200) {
-    if ($aluno['pontmes'] + $pontuacao > 200) {
-        echo json_encode(['success' => false, 'message' => 'Limite de pontos mensal atingido.']);
-        exit;
-    }
+// Dividir a pontuação entre computada e excedente
+$pontuacaoComputada = min($pontuacao, $pontosFaltando);
+$pontuacaoExcedente = $pontuacao - $pontuacaoComputada;
+
+// Ajustar se for mês de férias
+if (in_array($mesAtual, $ferias)) {
+    $pontuacaoComputada += $pontuacaoExcedente;
+    $pontuacaoExcedente = 0;
 }
 
-$novoPontMes = $aluno['pontmes'] + $pontuacao;
-$novoPontAno = $aluno['pontano'] + $pontuacao;
+// Atualizar pontuações do aluno
+$novoPontMesGeral = $aluno['pontmesGeralAluno'] + $pontuacao;
+$novoPontAnoGeral = $aluno['pontanoGeralAluno'] + $pontuacao;
+$novoPontCompMes = $aluno['pontcompmesAluno'] + $pontuacaoComputada;
+$novoPontCompAno = $aluno['pontcompanoAluno'] + $pontuacaoComputada;
 
-// UPDATE alunos
-$update_query = "UPDATE alunos SET pontmes = ?, pontano = ? WHERE rmalu = ?";
-$update_stmt = $conexao->prepare($update_query);
-$update_stmt->bind_param("iis", $novoPontMes, $novoPontAno, $rmalu);
-$update_stmt->execute();
+$updateAluno = "UPDATE alunos SET pontmesGeralAluno = ?, pontanoGeralAluno = ?, pontcompmesAluno = ?, pontcompanoAluno = ? WHERE rmalu = ?";
+$stmtUpdateAluno = $conexao->prepare($updateAluno);
+$stmtUpdateAluno->bind_param("iiiis", $novoPontMesGeral, $novoPontAnoGeral, $novoPontCompMes, $novoPontCompAno, $rmalu);
+$stmtUpdateAluno->execute();
 
-// UPDATE visita
-$update_queryVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
-$update_stmtVisita = $conexao->prepare($update_queryVisita);
-$update_stmtVisita->bind_param("s", $idvisita);
-$update_stmtVisita->execute();
+// Atualizar o status da visita
+$updateVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
+$stmtUpdateVisita = $conexao->prepare($updateVisita);
+$stmtUpdateVisita->bind_param("i", $idvisita);
+$stmtUpdateVisita->execute();
 
+// Buscar dados da turma
 $nometur = $aluno['nometur'];
+$queryTurma = "SELECT pontmesGeralTurma, pontcompmensalTurma, pontcompgeralTurma, pontanualGeralTurma FROM turma WHERE nometur = ?";
+$stmtTurma = $conexao->prepare($queryTurma);
+$stmtTurma->bind_param("s", $nometur);
+$stmtTurma->execute();
+$resultTurma = $stmtTurma->get_result();
+$turma = $resultTurma->fetch_assoc();
 
-// Buscar a pontuação geral e mensal da sala
-$querySala = "SELECT pontgeral, pontmensal FROM turma WHERE nometur = ?";
-$stmtSala = $conexao->prepare($querySala);
-$stmtSala->bind_param("s", $nometur);
-$stmtSala->execute();
-$resultSala = $stmtSala->get_result();
-$sala = $resultSala->fetch_assoc();
+if ($turma) {
+    $novoPontGeralTurma = $turma['pontmesGeralTurma'] + $pontuacao;
+    $novoPontAnualGeralTurma = $turma['pontanualGeralTurma'] + $pontuacao;
+    $novoPontCompMensalTurma = $turma['pontcompmensalTurma'] + $pontuacaoComputada;
+    $novoPontCompGeralTurma = $turma['pontcompgeralTurma'] + $pontuacaoComputada;
 
-if ($sala) {
-    $novoPontGeral = $sala['pontgeral'] + $pontuacao;
-    $novoPontMensal = $sala['pontmensal'] + $pontuacao;
-
-    // UPDATE turma
-    $update_queryTurma = "UPDATE turma SET pontgeral = ?, pontmensal = ? WHERE nometur = ?";
-    $update_stmtTurma = $conexao->prepare($update_queryTurma);
-    $update_stmtTurma->bind_param("iis", $novoPontGeral, $novoPontMensal, $nometur);
-    $update_stmtTurma->execute();
+    $updateTurma = "UPDATE turma SET pontmesGeralTurma = ?, pontcompmensalTurma = ?, pontcompgeralTurma = ?, pontanualGeralTurma = ? WHERE nometur = ?";
+    $stmtUpdateTurma = $conexao->prepare($updateTurma);
+    $stmtUpdateTurma->bind_param("iiiis", $novoPontGeralTurma, $novoPontCompMensalTurma, $novoPontCompGeralTurma, $novoPontAnualGeralTurma, $nometur);
+    $stmtUpdateTurma->execute();
 }
 
+// Retornar resposta
 echo json_encode([
     'success' => true,
     'message' => 'Pontuação atualizada com sucesso.',
-    'novoPontMes' => $novoPontMes,
-    'novoPontAno' => $novoPontAno
+    'dadosAluno' => [
+        'pontmesGeral' => $novoPontMesGeral,
+        'pontanoGeral' => $novoPontAnoGeral,
+        'pontcompmes' => $novoPontCompMes,
+        'pontcompano' => $novoPontCompAno
+    ],
+    'dadosTurma' => [
+        'pontgeral' => $novoPontGeralTurma ?? null,
+        'pontcompmensal' => $novoPontCompMensalTurma ?? null,
+        'pontcompgeral' => $novoPontCompGeralTurma ?? null,
+        'pontanualGeral' => $novoPontAnualGeralTurma ?? null
+    ]
 ]);

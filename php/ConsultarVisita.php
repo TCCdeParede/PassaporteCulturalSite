@@ -117,15 +117,15 @@ $rmalu = $_GET['rmalu'];
 
           $nomealu = $aluno['nomealu'];
           $nometur = $aluno['nometur'];
-          $pontmes = $aluno['pontmes'];
-          $pontano = $aluno['pontano'];
+          $pontmesGeral = $aluno['pontmesGeralAluno'];
+          $pontanoGeral = $aluno['pontanoGeralAluno'];
 
           echo "
           <p>RM: $rmalu</p>
           <p>Nome: $nomealu</p>
           <p>Turma: $nometur</p>
-          <p id='pontMes'>Pontos no mês: $pontmes</p>
-          <p id='pontAno'>Pontos no ano: $pontano</p>
+          <p id='pontMes'>Pontos no mês: $pontmesGeral</p>
+          <p id='pontAno'>Pontos no ano: $pontanoGeral</p>
           ";
 
           // Calculando status
@@ -351,8 +351,8 @@ $rmalu = $_GET['rmalu'];
         .then(data => {
           if (data.success) {
             // Atualiza a pontuação exibida na página
-            const novosPontosMes = data.novoPontMes;
-            const novosPontosAno = data.novoPontAno;
+            const novosPontosMes = data.dadosAluno.pontmesGeral;
+            const novosPontosAno = data.dadosAluno.pontanoGeral;
 
             // Atualiza os elementos da página
             document.getElementById('pontMes').textContent = `Pontos no mês: ${novosPontosMes}`;
