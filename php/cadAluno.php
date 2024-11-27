@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conexao->begin_transaction();
 
         try {
-            $sql = "INSERT INTO alunos (rmalu, nomealu, emailalu, fotoalu, alusenha, pontmesGeral, pontanoGeral, pontcompmes, pontcompano, nometur)
+            $sql = "INSERT INTO alunos (rmalu, nomealu, emailalu, fotoalu, alusenha, pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur)
                     VALUES (?, ?, ?, ?, ?, 0, 0, 0, 0, ?)";
             $stmt = $conexao->prepare($sql);
             $stmt->bind_param("isssss", $rmalu, $nomealu, $emailalu, $fotoalu, $alusenha, $nometur);
