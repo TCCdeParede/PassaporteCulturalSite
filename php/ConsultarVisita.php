@@ -20,15 +20,10 @@ $rmalu = $_GET['rmalu'];
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Passaporte Cultural | Consultar visita</title>
   <!-- BOOTSTRAP CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
   <!-- BOOTSTRAP ICONS -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <!-- CSS -->
   <link rel="stylesheet" href="../css/style.css" />
   <!-- Google Maps JavaScript API -->
@@ -37,36 +32,20 @@ $rmalu = $_GET['rmalu'];
 
 <body>
   <!-- HEADER -->
-  <nav
-    class="navbar navbar-custom navbar-expand-lg border-body"
-    data-bs-theme="dark">
+  <nav class="navbar navbar-custom navbar-expand-lg border-body" data-bs-theme="dark">
     <div class="container-fluid">
       <a class="navbar-brand fs-4" href="../index.php">Passaporte Cultural</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasScrolling"
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
         aria-controls="offcanvasScrolling">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
-        class="offcanvas offcanvas-custom offcanvas-start"
-        data-bs-scroll="true"
-        data-bs-backdrop="false"
-        tabindex="-1"
-        id="offcanvasScrolling"
-        aria-labelledby="offcanvasScrollingLabel">
+      <div class="offcanvas offcanvas-custom offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false"
+        tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <ul
-            class="navbar-nav w-100 d-flex justify-content-evenly gap-3 fs-5">
+          <ul class="navbar-nav w-100 d-flex justify-content-evenly gap-3 fs-5">
             <li class="nav-item">
               <a class="nav-link" aria-current="page" href="../index.php">Home</a>
             </li>
@@ -102,12 +81,26 @@ $rmalu = $_GET['rmalu'];
       <!-- Coluna da Foto do Aluno e Informações -->
       <div
         class="col-11 col-md-3 d-flex flex-column align-items-center justify-content-center border border-black p-2 mx-auto shadow-sm">
-        <div
-          class="foto-aluno d-flex align-items-center justify-content-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-          </svg>
+        <div class="foto-aluno d-flex align-items-center justify-content-center">
+          <!-- Foto perfil aluno -->
+          <?php
+          $sqlcode_foto = "SELECT fotoalu FROM alunos WHERE rmalu = '$rmalu'";
+          $foto_query = $conexao->query($sqlcode_foto);
+          $foto = $foto_query->fetch_assoc();
+
+          if ($foto && !empty($foto['fotoalu'])) {
+            // Gera o caminho completo da imagem
+            $fotoPath = $foto['fotoalu'];
+            echo "<img src='../{$fotoPath}' alt='Foto do Aluno' class='img-fluid rounded-circle w-75 h-75'>";
+          } else {
+            // Exibe um ícone padrão se não houver foto
+            echo "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-person-circle' viewBox='0 0 16 16'>
+                  <path d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0'/>
+                  <path fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1'/>
+                </svg>";
+          }
+          ?>
+
         </div>
         <div class="info-aluno my-5">
           <?php
@@ -155,8 +148,7 @@ $rmalu = $_GET['rmalu'];
         <h4 class="text-center my-3"><?php echo "$posicaoAtual/$totalVisitas" ?></h4>
         <div class="row">
           <!-- Foto -->
-          <div
-            class="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3 mb-md-0">
+          <div class="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3 mb-md-0">
             <?php
 
             $sqlcode_imagens = "SELECT caminho_imagem FROM visita_imagens WHERE idfoto = '$idvisita'";
@@ -169,10 +161,7 @@ $rmalu = $_GET['rmalu'];
             }
             ?>
             <!-- CARROSSEL DE IMAGENS -->
-            <div
-              id="carouselExampleIndicators"
-              class="carousel slide h-100 w-100"
-              data-bs-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide h-100 w-100" data-bs-ride="carousel">
               <!-- INDICADORES -->
               <div class="carousel-indicators">
                 <?php
@@ -199,11 +188,13 @@ $rmalu = $_GET['rmalu'];
               <!-- FIM SLIDES -->
 
               <!-- CONTROLES -->
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
               </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
               </button>
@@ -212,12 +203,8 @@ $rmalu = $_GET['rmalu'];
             <!-- FIM CARROSSEL DE IMAGENS -->
           </div>
           <!-- Maps -->
-          <div
-            class="col-12 col-md-6 d-flex align-items-center justify-content-center">
-            <div
-              id="map"
-              class="w-100 h-100 border"
-              style="min-height: 300px;"></div>
+          <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
+            <div id="map" class="w-100 h-100 border" style="min-height: 300px;"></div>
           </div>
         </div>
 
@@ -249,14 +236,10 @@ $rmalu = $_GET['rmalu'];
         <div class="d-flex justify-content-between align-items-center mt-3">
           <i id="arrow-left" class="bi bi-arrow-left fs-2"></i>
           <div>
-            <button
-              class="btn btn-success buttonConsultarAceitar"
-              id="btnAceitar">
+            <button class="btn btn-success buttonConsultarAceitar" id="btnAceitar">
               Aceitar
             </button>
-            <button
-              class="btn btn-danger ms-2 buttonConsultarRecusar"
-              id="btnRecusar">
+            <button class="btn btn-danger ms-2 buttonConsultarRecusar" id="btnRecusar">
               Recusar
             </button>
           </div>
@@ -265,14 +248,9 @@ $rmalu = $_GET['rmalu'];
 
         <!-- Campo de recusa (escondido inicialmente) -->
         <div class="mt-3" id="recusaField" style="display: none">
-          <textarea
-            class="form-control"
-            rows="5"
-            placeholder="Explique o motivo da recusa..."
+          <textarea class="form-control" rows="5" placeholder="Explique o motivo da recusa..."
             style="resize: none"></textarea>
-          <button
-            class="btn btn-primary my-3 w-100 buttonCustom"
-            id="btnEnviarRecusa">
+          <button class="btn btn-primary my-3 w-100 buttonCustom" id="btnEnviarRecusa">
             Enviar
           </button>
         </div>
@@ -283,8 +261,7 @@ $rmalu = $_GET['rmalu'];
 
   <!-- FOOTER -->
   <div class="container">
-    <footer
-      class="d-flex flex-wrap justify-content-center align-items-center mt-2 py-1 border-top border-dark">
+    <footer class="d-flex flex-wrap justify-content-center align-items-center mt-2 py-1 border-top border-dark">
       <div class="col-md-12 text-center">
         <span class="mb-3 mb-md-0 text-secondary-emphasis">© 2024 Bunny Boys, Inc</span>
       </div>
@@ -301,8 +278,7 @@ $rmalu = $_GET['rmalu'];
   </div>
 
   <!-- BOOTSTRAP JS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 
@@ -341,12 +317,12 @@ $rmalu = $_GET['rmalu'];
       };
 
       fetch('atualizarPontos.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
         .then(response => response.json())
         .then(data => {
           if (data.success) {
@@ -372,7 +348,7 @@ $rmalu = $_GET['rmalu'];
     // Visita aceita  
     document
       .getElementById("btnAceitar")
-      .addEventListener("click", function() {
+      .addEventListener("click", function () {
         document.getElementById("modalMessage").innerText = "Você aceitou.";
         modal.style.display = "block";
 
@@ -392,13 +368,13 @@ $rmalu = $_GET['rmalu'];
     // Visita recusada
     document
       .getElementById("btnRecusar")
-      .addEventListener("click", function() {
+      .addEventListener("click", function () {
         document.getElementById("recusaField").style.display = "block";
       });
 
     document
       .getElementById("btnEnviarRecusa")
-      .addEventListener("click", function() {
+      .addEventListener("click", function () {
         let motivo = document.querySelector("#recusaField textarea").value;
         if (motivo.trim() === "") {
           document.getElementById("modalMessage").innerText =
@@ -432,7 +408,7 @@ $rmalu = $_GET['rmalu'];
 
           xhr.send("rev=" + rev + "&idvisita=" + idvisita + "&motivo=" + encodeURIComponent(motivoCapturado));
 
-          xhr.onload = function() {
+          xhr.onload = function () {
             if (xhr.status === 200) {
               const response = JSON.parse(xhr.responseText);
 
@@ -449,12 +425,12 @@ $rmalu = $_GET['rmalu'];
       });
 
     // Fechar modal ao clicar no botão "Ok"
-    document.getElementById("acceptBtn").onclick = function() {
+    document.getElementById("acceptBtn").onclick = function () {
       modal.style.display = "none";
     };
 
     // Fechar modal ao clicar fora dele
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
@@ -464,11 +440,11 @@ $rmalu = $_GET['rmalu'];
 
   <!-- SCRIPT NAVEGACAO VISITAS -->
   <script>
-    document.getElementById("arrow-left").addEventListener("click", function() {
+    document.getElementById("arrow-left").addEventListener("click", function () {
       navigateTo("prev");
     });
 
-    document.getElementById("arrow-right").addEventListener("click", function() {
+    document.getElementById("arrow-right").addEventListener("click", function () {
       navigateTo("next");
     });
 
