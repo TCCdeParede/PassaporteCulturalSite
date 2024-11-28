@@ -9,8 +9,9 @@ error_reporting(E_ALL);
 
 $direction = $_GET['direction'] ?? null;
 $currentId = intval($_GET['currentId'] ?? 0);
+$rev = $_GET['rev'] ?? null;
 
-if (!$direction || $currentId === 0) {
+if (!$direction || $currentId === 0 || !$rev) {
     echo json_encode(['success' => false, 'message' => 'Parâmetros inválidos']);
     exit;
 }
@@ -19,14 +20,14 @@ if ($direction === 'prev') {
     $sql = "
         SELECT idfoto, rmalu
         FROM visita 
-        WHERE idfoto < $currentId AND rev = 'Pendente' 
+        WHERE idfoto < $currentId AND rev = '$rev' 
         ORDER BY idfoto DESC 
         LIMIT 1";
 } elseif ($direction === 'next') {
     $sql = "
         SELECT idfoto, rmalu
         FROM visita 
-        WHERE idfoto > $currentId AND rev = 'Pendente' 
+        WHERE idfoto > $currentId AND rev = '$rev' 
         ORDER BY idfoto ASC 
         LIMIT 1";
 } else {

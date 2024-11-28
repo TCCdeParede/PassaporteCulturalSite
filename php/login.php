@@ -41,7 +41,8 @@ if (isset($_SESSION['errorSenha'])) {
   <!-- FIM HEADER -->
 
   <!-- MAIN -->
-  <main class="form-signin container-lg m-auto d-flex flex-column justify-content-center px-4" style="min-height: 75vh;">
+  <main class="form-signin container-lg m-auto d-flex flex-column justify-content-center px-4"
+    style="min-height: 75vh;">
     <div class="col-12 col-md-9 mx-auto">
       <form action="valida_login.php" method="post" autocomplete="off">
         <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
@@ -49,7 +50,8 @@ if (isset($_SESSION['errorSenha'])) {
         <!-- Campo RadioButton -->
         <div class="d-flex justify-content-center mb-3">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tipoLogin" id="flexRadioDefault1" value="professor" checked>
+            <input class="form-check-input" type="radio" name="tipoLogin" id="flexRadioDefault1" value="professor"
+              checked>
             <label class="form-check-label" for="flexRadioDefault1">
               Professor
             </label>
@@ -82,7 +84,8 @@ if (isset($_SESSION['errorSenha'])) {
 
         <!-- Lembre-me e link para cadastro -->
         <div class="form-check text-start my-4">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+          <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
             <div class="d-flex align-items-center mb-3 mb-md-0">
               <input class="form-check-input" type="checkbox" id="flexCheckDefault">
               <label class="form-check-label ms-2" for="flexCheckDefault">
@@ -151,7 +154,7 @@ if (isset($_SESSION['errorSenha'])) {
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-  </script>
+    </script>
 
 </body>
 

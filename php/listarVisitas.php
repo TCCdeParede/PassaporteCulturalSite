@@ -80,7 +80,7 @@ $rev = $_GET['rev'];
     <div class="col-lg-6 mx-auto">
       <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Visitas</h1>
       <form method="GET" action="" id="filtroForm">
-        <select class="form-select w-50 mx-auto" name="rev" onchange="document.getElementById('filtroForm').submit();">
+        <select class="form-select w-50 mx-auto selectCustom" name="rev" onchange="document.getElementById('filtroForm').submit();">
           <option value="Pendente" <?php if ($_GET['rev'] === 'Pendente') echo 'selected'; ?>>Pendentes</option>
           <option value="Aceito" <?php if ($_GET['rev'] === 'Aceito') echo 'selected'; ?>>Aprovadas</option>
           <option value="Não aceito" <?php if ($_GET['rev'] === 'Não aceito') echo 'selected'; ?>>Recusadas</option>
@@ -129,7 +129,7 @@ $rev = $_GET['rev'];
                     <td>$nometur</td>
                     <td>$dataFormatada</td>
                     <td>$local</td>
-                    <td><a href=\" ./ConsultarVisita.php?rmalu=$rmalu&idvisita=$idvisita\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">Consultar</a></td>
+                    <td><a href=\" ./ConsultarVisita.php?rmalu=$rmalu&idvisita=$idvisita&rev=$rev\" class=\"link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover\">Consultar</a></td>
                   </tr>
                 ";
               }

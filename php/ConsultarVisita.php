@@ -8,6 +8,8 @@ if (!isset($_SESSION["tipoLogin"])) {
 
 $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
+$rev = $_GET['rev'];
+
 include "conexao.php";
 
 $idvisita = $_GET['idvisita'];
@@ -100,7 +102,6 @@ $rmalu = $_GET['rmalu'];
                 </svg>";
           }
           ?>
-
         </div>
         <div class="info-aluno my-5">
           <?php
@@ -122,11 +123,26 @@ $rmalu = $_GET['rmalu'];
           ";
 
           // Calculando status
-          $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Pendente'";
+          
+          if ($rev === 'Pendente') {
+            $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Pendente'";
+          } elseif ($rev === "Aceito") {
+            $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Aceito'";
+          } elseif ($rev === "Não aceito") {
+            $sqlcode_totalVisitas = "SELECT COUNT(*) as total FROM visita WHERE rev = 'Não aceito'";
+          }
+
           $totalVisitas_query = $conexao->query($sqlcode_totalVisitas);
           $totalVisitas = $totalVisitas_query->fetch_assoc()['total'];
 
-          $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita WHERE rev = 'Pendente'";
+          if ($rev === 'Pendente') {
+            $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita WHERE rev = 'Pendente'";
+          } elseif ($rev === "Aceito") {
+            $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita WHERE rev = 'Aceito'";
+          } elseif ($rev === "Não aceito") {
+            $sqlcode_posicao = "SELECT ROW_NUMBER() OVER (ORDER BY idfoto asc) AS posicao, idfoto FROM visita WHERE rev = 'Não aceito'";
+          }
+
           $posicao_query = $conexao->query($sqlcode_posicao);
 
           $posicaoAtual = 1;
@@ -146,6 +162,13 @@ $rmalu = $_GET['rmalu'];
       <!-- Coluna Central com Status -->
       <div class="col-11 col-md-8 border border-black p-2 mx-auto shadow-sm">
         <h4 class="text-center my-3"><?php echo "$posicaoAtual/$totalVisitas" ?></h4>
+        <?php
+
+        if ($rev === 'Aceitou' || 'Não aceito') {
+          echo "<h4 class='text-center my-3'>Status: $rev</h4>";
+        }
+
+        ?>
         <div class="row">
           <!-- Foto -->
           <div class="col-12 col-md-6 d-flex align-items-center justify-content-center mb-3 mb-md-0">
@@ -211,7 +234,14 @@ $rmalu = $_GET['rmalu'];
         <!-- Data, Hora e Local -->
         <div class="mt-3 text-center">
           <?php
-          $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita' AND rev = 'Pendente'";
+          if ($rev === 'Pendente') {
+            $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita' AND rev = 'Pendente'";
+          } elseif ($rev === "Aceito") {
+            $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita' AND rev = 'Aceito'";
+          } elseif ($rev === "Não aceito") {
+            $sqlcode_visitas = "SELECT * FROM visita WHERE idfoto = '$idvisita' AND rev = 'Não aceito'";
+          }
+
           $visitas_query = $conexao->query($sqlcode_visitas);
           $visita = $visitas_query->fetch_assoc();
           $data = $visita['data'];
@@ -236,24 +266,37 @@ $rmalu = $_GET['rmalu'];
         <div class="d-flex justify-content-between align-items-center mt-3">
           <i id="arrow-left" class="bi bi-arrow-left fs-2"></i>
           <div>
-            <button class="btn btn-success buttonConsultarAceitar" id="btnAceitar">
+            <button class="btn btn-success buttonConsultarAceitar" id="btnAceitar" <?php echo ($rev === 'Aceito' || $rev === 'Não aceito') ? 'disabled' : ''; ?>>
               Aceitar
             </button>
-            <button class="btn btn-danger ms-2 buttonConsultarRecusar" id="btnRecusar">
+            <button class="btn btn-danger ms-2 buttonConsultarRecusar" id="btnRecusar" <?php echo ($rev === 'Aceito' || $rev === 'Não aceito') ? 'disabled' : ''; ?>>
               Recusar
             </button>
+
           </div>
           <i id="arrow-right" class="bi bi-arrow-right fs-2"></i>
         </div>
 
         <!-- Campo de recusa (escondido inicialmente) -->
-        <div class="mt-3" id="recusaField" style="display: none">
-          <textarea class="form-control" rows="5" placeholder="Explique o motivo da recusa..."
-            style="resize: none"></textarea>
-          <button class="btn btn-primary my-3 w-100 buttonCustom" id="btnEnviarRecusa">
-            Enviar
-          </button>
+        <div class="mt-3" id="recusaField"
+          style="<?php echo ($rev === 'Não aceito') ? 'display: block;' : 'display: none;' ?>">
+          <?php
+          $sqlMotivo = "SELECT motivo FROM visita WHERE idfoto = $idvisita";
+          $motivoQuery = $conexao->query($sqlcode_visitas);
+          $motivo = $motivoQuery ? $motivoQuery->fetch_assoc()['motivo'] : '';
+          ?>
+          <textarea class="form-control" rows="5" placeholder="Explique o motivo da recusa..." style="resize: none"
+            <?php echo ($rev === 'Não aceito') ? 'readonly' : ''; ?>>
+            <?php echo ($rev === 'Não aceito') ? htmlspecialchars($motivo) : ''; ?>
+         </textarea>
+
+          <?php if ($rev !== 'Não aceito'): ?>
+            <button class="btn btn-primary my-3 w-100 buttonCustom" id="btnEnviarRecusa">
+              Enviar
+            </button>
+          <?php endif; ?>
         </div>
+
       </div>
     </div>
   </main>
@@ -280,7 +323,8 @@ $rmalu = $_GET['rmalu'];
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+    crossorigin="anonymous">
+  </script>
 
   <!-- SCRIPT MAPS -->
   <script>
@@ -450,8 +494,9 @@ $rmalu = $_GET['rmalu'];
 
     function navigateTo(direction) {
       const currentIdVisita = <?php echo intval($idvisita); ?>;
+      const rev = "<?php echo $rev; ?>";
 
-      fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}`)
+      fetch(`navigateVisita.php?direction=${direction}&currentId=${currentIdVisita}&rev=${encodeURIComponent(rev)}  `)
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
@@ -459,7 +504,7 @@ $rmalu = $_GET['rmalu'];
               idvisita,
               rmalu
             } = data;
-            window.location.href = `?idvisita=${idvisita}&rmalu=${rmalu}`;
+            window.location.href = `?idvisita=${idvisita}&rmalu=${rmalu}&rev=${rev}`;
           } else {
             document.getElementById("modalMessage").innerText = direction === "prev" ?
               "Não há visitas pendentes anteriores." :
