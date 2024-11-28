@@ -9,6 +9,12 @@ if (!isset($_SESSION["tipoLogin"])) {
 
 $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
+if (!isset($_GET['rev'])){
+  $_GET['rev'] = 'Pendente';
+}
+
+$rev = $_GET['rev'];
+
 ?>
 <html lang="pt-br">
 
@@ -73,6 +79,13 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
   <main class="p-4 my-4 text-center">
     <div class="col-lg-6 mx-auto">
       <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Visitas</h1>
+      <form method="GET" action="" id="filtroForm">
+        <select class="form-select w-50 mx-auto" name="rev" onchange="document.getElementById('filtroForm').submit();">
+          <option value="Pendente" <?php if ($_GET['rev'] === 'Pendente') echo 'selected'; ?>>Pendentes</option>
+          <option value="Aceito" <?php if ($_GET['rev'] === 'Aceito') echo 'selected'; ?>>Aprovadas</option>
+          <option value="Não aceito" <?php if ($_GET['rev'] === 'Não aceito') echo 'selected'; ?>>Recusadas</option>
+        </select>
+      </form>
       <div class="table-responsive mt-3">
         <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table">
           <thead class="sticky-top text-center">
@@ -89,7 +102,9 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
             <?php
             include "conexao.php";
 
-            $sqlcode = "SELECT * FROM visita WHERE rev = 'Pendente'";
+            $rev = $_GET['rev'] ?? 'Pendente'; // Default para pendentes
+            $sqlcode = "SELECT * FROM visita WHERE rev = '$rev'";
+
             $sqlquery = $conexao->query($sqlcode);
 
             if ($sqlquery->num_rows > 0) {
@@ -121,7 +136,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
             } else {
               echo "
                 <tr>
-                  <td colspan='6' class='text-center'>Nenhuma visita pendente encontrada</td>
+                  <td colspan='6' class='text-center'>Nenhuma visita encontrada</td>
                 </tr>
               ";
             }
@@ -142,14 +157,6 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
     </div>
   </footer>
   <!-- FIM FOOTER -->
-
-  <!-- MODAL -->
-  <div id="myModal" class="modal" style="display: none">
-    <div class="modal-content">
-      <p id="modalMessage">Mensagem aqui!</p>
-      <button id="acceptBtn">Ok</button>
-    </div>
-  </div>
 
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
