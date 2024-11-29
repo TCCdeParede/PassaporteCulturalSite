@@ -265,15 +265,28 @@ $rmalu = $_GET['rmalu'];
         <!-- Setas e Botões -->
         <div class="d-flex justify-content-between align-items-center mt-3">
           <i id="arrow-left" class="bi bi-arrow-left fs-2"></i>
-          <div>
-            <button class="btn btn-success buttonConsultarAceitar" id="btnAceitar" <?php echo ($rev === 'Aceito' || $rev === 'Não aceito') ? 'disabled' : ''; ?>>
-              Aceitar
-            </button>
-            <button class="btn btn-danger ms-2 buttonConsultarRecusar" id="btnRecusar" <?php echo ($rev === 'Aceito' || $rev === 'Não aceito') ? 'disabled' : ''; ?>>
-              Recusar
-            </button>
-
-          </div>
+          <?php if ($isAdmin || $rev === 'Pendente'): ?>
+            <div>
+              <button class="btn btn-success buttonConsultarAceitar" id="btnAceitar" <?php
+              if ($rev === 'Aceito' && $isAdmin) {
+                echo 'disabled';
+              } else {
+                echo '';
+              }
+              ?>>
+                Aceitar
+              </button>
+              <button class="btn btn-danger ms-2 buttonConsultarRecusar" id="btnRecusar" <?php
+              if ($rev === 'Não aceito' && $isAdmin) {
+                echo 'disabled';
+              } else {
+                echo '';
+              }
+              ?>>
+                Recusar
+              </button>
+            </div>
+          <?php endif; ?>
           <i id="arrow-right" class="bi bi-arrow-right fs-2"></i>
         </div>
 
@@ -282,13 +295,13 @@ $rmalu = $_GET['rmalu'];
           style="<?php echo ($rev === 'Não aceito') ? 'display: block;' : 'display: none;' ?>">
           <?php
           $sqlMotivo = "SELECT motivo FROM visita WHERE idfoto = $idvisita";
-          $motivoQuery = $conexao->query($sqlcode_visitas);
-          $motivo = $motivoQuery ? $motivoQuery->fetch_assoc()['motivo'] : '';
+          $motivoQuery = $conexao->query($sqlMotivo);
+          $motivo = $motivoQuery ? trim($motivoQuery->fetch_assoc()['motivo'] ?? '') : '';
           ?>
           <textarea class="form-control" rows="5" placeholder="Explique o motivo da recusa..." style="resize: none"
             <?php echo ($rev === 'Não aceito') ? 'readonly' : ''; ?>>
-            <?php echo ($rev === 'Não aceito') ? htmlspecialchars($motivo) : ''; ?>
-         </textarea>
+            <?php echo htmlspecialchars($motivo); ?>
+        </textarea>
 
           <?php if ($rev !== 'Não aceito'): ?>
             <button class="btn btn-primary my-3 w-100 buttonCustom" id="btnEnviarRecusa">
@@ -296,7 +309,6 @@ $rmalu = $_GET['rmalu'];
             </button>
           <?php endif; ?>
         </div>
-
       </div>
     </div>
   </main>
@@ -313,18 +325,18 @@ $rmalu = $_GET['rmalu'];
   <!-- FIM FOOTER -->
 
   <!-- MODAL -->
-  <div id="myModal" class="modal" style="display: none">
+  <div id="myModal" class="modal" style="display: none;">
     <div class="modal-content">
       <p id="modalMessage"></p>
       <button id="acceptBtn" class="buttonCustom">Ok</button>
     </div>
   </div>
+  <!-- FIM MODAL -->
 
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous">
-  </script>
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
 
   <!-- SCRIPT MAPS -->
   <script>
@@ -349,10 +361,16 @@ $rmalu = $_GET['rmalu'];
   </script>
   <!-- FIM SCRIPT MAPS -->
 
-  <!-- SCRIPT ACEITA/RECUSA -->
+  <!-- SCRIPT ACEITA/RECUSA VISITA -->
   <script>
+    // Função para mostrar o modal
+    function mostrarModal(message) {
+      document.getElementById("modalMessage").innerText = message;
+      document.getElementById("myModal").style.display = "block";
+    }
+
+    // Função para aceitar a visita
     function aceitarVisita(idvisita, rmalu, local) {
-      // Enviar dados ao servidor para aceitar a visita e atualizar os pontos
       const data = {
         idvisita: idvisita,
         rmalu: rmalu,
@@ -370,7 +388,6 @@ $rmalu = $_GET['rmalu'];
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Atualiza a pontuação exibida na página
             const novosPontosMes = data.dadosAluno.pontmesGeral;
             const novosPontosAno = data.dadosAluno.pontanoGeral;
 
@@ -378,109 +395,135 @@ $rmalu = $_GET['rmalu'];
             document.getElementById('pontMes').textContent = `Pontos no mês: ${novosPontosMes}`;
             document.getElementById('pontAno').textContent = `Pontos no ano: ${novosPontosAno}`;
 
-            // Atualizar a classe ou texto da visita (caso necessário)
-            alert("Visita aceita e pontos atualizados com sucesso!");
+            // Exibe a mensagem no modal
+            mostrarModal("Visita aceita e pontos atualizados com sucesso!");
           } else {
-            alert(data.message);
+            mostrarModal(data.message);
           }
         })
         .catch(error => console.error('Erro ao aceitar visita:', error));
     }
 
-    var modal = document.getElementById("myModal");
+    // Esperar o DOM carregar completamente
+    document.addEventListener("DOMContentLoaded", function () {
+      var modal = document.getElementById("myModal");
 
-    // Visita aceita  
-    document
-      .getElementById("btnAceitar")
-      .addEventListener("click", function () {
-        document.getElementById("modalMessage").innerText = "Você aceitou.";
-        modal.style.display = "block";
-
-        // Desabilitando botões
-        document.getElementById("btnAceitar").setAttribute("disabled", "");
-        document.getElementById("btnRecusar").setAttribute("disabled", "");
-
-        // Enviando dados via AJAX
-        const rmalu = <?php echo $rmalu ?>;
-        const local = "<?php echo $local ?>";
-        const rev = "<?php echo $rev ?>";
-        const idvisita = <?php echo $idvisita ?>;
-
-        aceitarVisita(idvisita, rmalu, local);
-      });
-
-    // Visita recusada
-    document
-      .getElementById("btnRecusar")
-      .addEventListener("click", function () {
-        document.getElementById("recusaField").style.display = "block";
-      });
-
-    document
-      .getElementById("btnEnviarRecusa")
-      .addEventListener("click", function () {
-        let motivo = document.querySelector("#recusaField textarea").value;
-        if (motivo.trim() === "") {
-          document.getElementById("modalMessage").innerText =
-            "Por favor, explique o motivo da recusa.";
-          modal.style.display = "block";
-        } else {
-          let motivoCapturado = motivo;
-
-          document.getElementById("modalMessage").innerText =
-            "Recusa enviada: " + motivo;
-
+      // Botão de visita aceita
+      const btnAceitar = document.getElementById("btnAceitar");
+      if (btnAceitar) {
+        btnAceitar.addEventListener("click", function () {
+          document.getElementById("modalMessage").innerText = "Você aceitou.";
           modal.style.display = "block";
 
-          document
-            .querySelector(".form-control")
-            .setAttribute("disabled", "");
-
-          document
-            .getElementById("btnEnviarRecusa")
-            .setAttribute("disabled", "");
-
-          document.getElementById("btnAceitar").setAttribute("disabled", "");
+          // Desabilitando botões
+          btnAceitar.setAttribute("disabled", "");
           document.getElementById("btnRecusar").setAttribute("disabled", "");
 
+          // Enviando dados via AJAX
+          const rmalu = <?php echo $rmalu ?>;
+          const local = "<?php echo $local ?>";
           const rev = "<?php echo $rev ?>";
           const idvisita = <?php echo $idvisita ?>;
 
-          const xhr = new XMLHttpRequest();
-          xhr.open("POST", "visitaRecusada.php", true);
-          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+          aceitarVisita(idvisita, rmalu, local);
+        });
+      }
 
-          xhr.send("rev=" + rev + "&idvisita=" + idvisita + "&motivo=" + encodeURIComponent(motivoCapturado));
+      // Botão de visita recusada
+      const btnRecusar = document.getElementById("btnRecusar");
+      if (btnRecusar) {
+        btnRecusar.addEventListener("click", function () {
+          document.getElementById("recusaField").style.display = "block";
+        });
+      }
 
-          xhr.onload = function () {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.responseText);
+      // Botão de enviar recusa
+      const btnEnviarRecusa = document.getElementById("btnEnviarRecusa");
+      if (btnEnviarRecusa) {
+        btnEnviarRecusa.addEventListener("click", function () {
+          let motivo = document.querySelector("#recusaField textarea").value;
+          if (motivo.trim() === "") {
+            mostrarModal("Por favor, explique o motivo da recusa.");
+          } else {
+            let motivoCapturado = motivo;
+            mostrarModal("Recusa enviada: " + motivoCapturado);
+            document.querySelector(".form-control").setAttribute("disabled", "");
+            btnEnviarRecusa.setAttribute("disabled", "");
+            document.getElementById("btnAceitar").setAttribute("disabled", "");
+            document.getElementById("btnRecusar").setAttribute("disabled", "");
 
-              if (response.success) {
-                document.getElementById("modalMessage").innerText = "Visita recusada com sucesso!";
-                modal.style.display = "block";
-              } else {
-                document.getElementById("modalMessage").innerText = "Erro ao recusar a visita.";
-                modal.style.display = "block";
-              }
+            const rev = "<?php echo $rev ?>";
+            const idvisita = <?php echo $idvisita ?>;
+            const rmalu = <?php echo $rmalu ?>;
+            const local = "<?php echo $local ?>";
+
+            // Verificar se a visita foi aceita ou pendente
+            if (rev === "Aceito") {
+              fetch('subtrairPontos.php', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  idvisita: idvisita,
+                  rmalu: rmalu,
+                  motivo: motivoCapturado,
+                  rev: rev
+                })
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    document.getElementById('pontMes').textContent = `Pontos no mês: ${data.dadosAluno.pontmesGeral}`;
+                    document.getElementById('pontAno').textContent = `Pontos no ano: ${data.dadosAluno.pontanoGeral}`;
+
+                    mostrarModal("Visita recusada com sucesso e pontos reajustados!");
+                  } else {
+                    mostrarModal(data.message);
+                  }
+                })
+                .catch(error => console.error('Erro ao subtrair pontos:', error));
+            } else {
+              fetch('visitaRecusada.php', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `rev=${rev}&idvisita=${idvisita}&motivo=${encodeURIComponent(motivoCapturado)}`
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    mostrarModal("Visita recusada com sucesso!");
+                  } else {
+                    mostrarModal("Erro ao recusar a visita.");
+                  }
+                })
+                .catch(error => console.error('Erro ao recusar visita:', error));
             }
           }
-        }
-      });
-
-    // Fechar modal ao clicar no botão "Ok"
-    document.getElementById("acceptBtn").onclick = function () {
-      modal.style.display = "none";
-    };
-
-    // Fechar modal ao clicar fora dele
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+        });
       }
-    };
+
+      // Fechar modal ao clicar no botão "Ok"
+      const acceptBtn = document.getElementById("acceptBtn");
+      if (acceptBtn) {
+        acceptBtn.onclick = function () {
+          document.getElementById("modalMessage").innerText = ''; // Limpa qualquer mensagem antiga
+          modal.style.display = "none";
+        };
+      }
+
+      // Fechar modal ao clicar fora dele
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    });
   </script>
-  <!-- SCRIPT ACEITA/RECUSA -->
+  <!-- FIM SCRIPT ACEITA/RECUSA VISITA -->
+
 
   <!-- SCRIPT NAVEGACAO VISITAS -->
   <script>

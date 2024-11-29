@@ -4,6 +4,10 @@ include "conexao.php";
 
 $idvisita = $_POST['idvisita'];
 $motivo = $_POST['motivo'];
+$motivo = trim($motivo);
+if (empty($motivo)) {
+    $motivo = null; 
+}
 $rev = $_POST['rev'];
 
 $update_queryVisita = "UPDATE visita SET rev = 'Não aceito', motivo = ? WHERE idfoto = ?";

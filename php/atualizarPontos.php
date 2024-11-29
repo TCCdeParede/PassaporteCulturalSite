@@ -72,7 +72,7 @@ $stmtUpdateAluno->bind_param("iiiis", $novoPontMesGeral, $novoPontAnoGeral, $nov
 $stmtUpdateAluno->execute();
 
 // Atualizar o status da visita
-$updateVisita = "UPDATE visita SET rev = 'Aceito' WHERE idfoto = ?";
+$updateVisita = "UPDATE visita SET rev = 'Aceito', motivo = null WHERE idfoto = ?";
 $stmtUpdateVisita = $conexao->prepare($updateVisita);
 $stmtUpdateVisita->bind_param("i", $idvisita);
 $stmtUpdateVisita->execute();
