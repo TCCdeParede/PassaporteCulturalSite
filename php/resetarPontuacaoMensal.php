@@ -10,3 +10,4 @@ if ($conexao->query($resetAluno) === TRUE && $conexao->query($resetTurma) === TR
 } else {
     echo "Erro ao resetar pontuações: " . $conexao->error;
 }
+     

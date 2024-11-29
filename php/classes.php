@@ -142,29 +142,30 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                         if (empty($classe)) {
                             if ($isAdmin) {
                                 echo "
-                    <tr>
-                        <td colspan='11' class='text-center'>Selecione uma sala</td>
-                    </tr>";
+                        <tr>
+                            <td colspan='11' class='text-center'>Selecione uma sala</td>
+                        </tr>";
                             } else {
                                 echo "
-                    <tr>
-                        <td colspan='7' class='text-center'>Selecione uma sala</td>
-                    </tr>";
+                        <tr>
+                            <td colspan='7' class='text-center'>Selecione uma sala</td>
+                        </tr>";
                             }
                         } else {
+                            // Ajuste na consulta para excluir alunos inativos ou formados
                             $query = mysqli_query($conexao, "
-                SELECT 
-                    a.rmalu, 
-                    a.nomealu, 
-                    a.emailalu, 
-                    a.pontanoGeralAluno, 
-                    a.pontmesGeralAluno, 
-                    a.pontcompanoAluno, 
-                    a.pontcompmesAluno
-                FROM alunos a
-                WHERE a.nometur = '$classe'
-                ORDER BY a.nomealu ASC
-            ");
+                    SELECT 
+                        a.rmalu, 
+                        a.nomealu, 
+                        a.emailalu, 
+                        a.pontanoGeralAluno, 
+                        a.pontmesGeralAluno, 
+                        a.pontcompanoAluno, 
+                        a.pontcompmesAluno
+                    FROM alunos a
+                    WHERE a.nometur = '$classe' AND a.status = 'ativo'
+                    ORDER BY a.nomealu ASC
+                ");
 
                             if (mysqli_num_rows($query) > 0) {
                                 while ($row = mysqli_fetch_array($query)) {
@@ -177,32 +178,32 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                                     $pontCompMes = $row['pontcompmesAluno'];
 
                                     echo "
-                    <tr>
-                        <td>$rmalu</td>
-                        <td>$nomealu</td>
-                        <td>$emailalu</td>";
+                            <tr>
+                                <td>$rmalu</td>
+                                <td>$nomealu</td>
+                                <td>$emailalu</td>";
                                     if ($isAdmin) {
                                         echo "
-                                            <td>
-                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
-                                            </td>
-                                            <td>
-                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
-                                            </td>";
+                                <td>
+                                    <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
+                                </td>
+                                <td>
+                                    <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
+                                </td>";
                                     }
                                     echo "
-                                            <td>$pontGeralAno</td>
-                                            <td>$pontGeralMes</td>
-                                            <td>$pontCompAno</td>
-                                            <td>$pontCompMes</td>
-                                        </tr>";
+                                <td>$pontGeralAno</td>
+                                <td>$pontGeralMes</td>
+                                <td>$pontCompAno</td>
+                                <td>$pontCompMes</td>
+                            </tr>";
                                 }
                             } else {
                                 $colspan = $isAdmin ? 11 : 7;
                                 echo "
-                                    <tr>
-                                        <td colspan='$colspan' class='text-center'>Nenhum aluno encontrado</td>
-                                    </tr>";
+                        <tr>
+                            <td colspan='$colspan' class='text-center'>Nenhum aluno encontrado</td>
+                        </tr>";
                             }
                         }
                         ?>
@@ -210,7 +211,9 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                     <tfoot class="sticky-bottom">
                         <?php
                         $sqlcode_turma = "
-            SELECT pontcompmensalTurma, pontcompgeralTurma, pontmesGeralTurma, pontanualGeralTurma FROM turma WHERE nometur = '$classe'";
+                SELECT pontcompmensalTurma, pontcompgeralTurma, pontmesGeralTurma, pontanualGeralTurma 
+                FROM turma 
+                WHERE nometur = '$classe'";
                         $turma_query = $conexao->query($sqlcode_turma);
                         $turma = $turma_query->fetch_assoc();
                         $pontGeralMensalTurma = $turma["pontmesGeralTurma"] ?? "0";
@@ -220,17 +223,18 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
                         $colspan = $isAdmin ? 5 : 3;
                         echo "
-                            <tr>
-                                <th colspan='$colspan' scope='row'>Pontuação da Sala: </th>
-                                <td>$pontGeralAnualTurma</td>
-                                <td>$pontGeralMensalTurma</td>
-                                <td>$pontCompGeral</td>
-                                <td>$pontCompMensal</td>
-                            </tr>";
+                <tr>
+                    <th colspan='$colspan' scope='row'>Pontuação da Sala: </th>
+                    <td>$pontGeralAnualTurma</td>
+                    <td>$pontGeralMensalTurma</td>
+                    <td>$pontCompGeral</td>
+                    <td>$pontCompMensal</td>
+                </tr>";
                         ?>
                     </tfoot>
                 </table>
             </div>
+
 
             <?php if ($isAdmin): ?>
                 <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar
