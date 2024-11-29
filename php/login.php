@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-// Mensagens de erro
+// Mensagens de erro e sucesso
 $errorRm = '';
 $errorSenha = '';
 
-// Verifica se a página foi acessada após o redirecionamento com erro
 if (isset($_SESSION['errorRm'])) {
   $errorRm = $_SESSION['errorRm'];
   unset($_SESSION['errorRm']);
@@ -15,7 +14,17 @@ if (isset($_SESSION['errorSenha'])) {
   $errorSenha = $_SESSION['errorSenha'];
   unset($_SESSION['errorSenha']);
 }
+
+$statusMessage = '';
+if (isset($_GET['status'])) {
+  if ($_GET['status'] === 'email_sent') {
+    $statusMessage = 'Um link para redefinir sua senha foi enviado para seu e-mail.';
+  } elseif ($_GET['status'] === 'password_reset') {
+    $statusMessage = 'Sua senha foi redefinida com sucesso!';
+  }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -35,7 +44,7 @@ if (isset($_SESSION['errorSenha'])) {
   <!-- HEADER -->
   <nav class="navbar navbar-custom navbar-expand-lg border-body" data-bs-theme="dark">
     <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1 titleLogin">Passaporte Cultural</span>
+      <span class="navbar-brand mb-0 h1 titleLogin"><a class="navbar-brand fs-4" href="#">Passaporte Cultural</a></span>
     </div>
   </nav>
   <!-- FIM HEADER -->
@@ -82,20 +91,13 @@ if (isset($_SESSION['errorSenha'])) {
           <?php endif; ?>
         </div>
 
-        <!-- Lembre-me e link para cadastro -->
+        <!-- Redefinir senha -->
         <div class="form-check text-start my-4">
-          <div
-            class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
-            <div class="d-flex align-items-center mb-3 mb-md-0">
-              <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-              <label class="form-check-label ms-2" for="flexCheckDefault">
-                <span>Lembre-me</span>
-              </label>
-            </div>
+          <div class="d-block m-auto text-center text-md-start">
             <p class="mb-0 mb-md-0 mt-3 mt-md-0">
-              <a href="../html/cadastro.html"
+              <a href="redefinirSenha.php"
                 class="link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
-                Primeira vez? Clique aqui para realizar seu Cadastro
+                Esqueceu a senha? Clique aqui para redefinir
               </a>
             </p>
           </div>
@@ -108,6 +110,15 @@ if (isset($_SESSION['errorSenha'])) {
   </main>
 
   <!-- FIM MAIN -->
+
+  <!-- MODAL -->
+  <div id="myModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p id="modalMessage"></p>
+      <button id="acceptBtn" class="buttonCustom">Ok</button>
+    </div>
+  </div>
+  <!-- FIM MODAL -->
 
   <!-- FOOTER -->
   <div class="container">
@@ -150,6 +161,24 @@ if (isset($_SESSION['errorSenha'])) {
     alterarCampoLogin();
   </script>
   <!-- FIM Trocar login -->
+
+  <script>
+    const statusMessage = "<?= $statusMessage ?>";
+
+    if (statusMessage) {
+      const modal = document.getElementById('myModal');
+      const modalMessage = document.getElementById('modalMessage');
+      const acceptBtn = document.getElementById('acceptBtn');
+
+      modalMessage.textContent = statusMessage;
+      modal.style.display = 'block';
+
+      acceptBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        window.history.replaceState({}, document.title, window.location.pathname);
+      });
+    }
+  </script>
 
   <!-- BOOTSTRAP JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
