@@ -82,7 +82,7 @@ $rmalu = $_GET['rmalu'];
     <div class="row mt-3 gap-2 justify-content-center">
       <!-- Coluna da Foto do Aluno e Informações -->
       <div
-        class="col-11 col-md-3 d-flex flex-column align-items-center justify-content-center border border-black p-2 mx-auto shadow-sm">
+        class="col-11 col-md-3 d-flex flex-column align-items-center justify-content-center border border-black rounded-2 p-2 mx-auto shadow-sm">
         <div class="foto-aluno d-flex align-items-center justify-content-center">
           <!-- Foto perfil aluno -->
           <?php
@@ -93,7 +93,7 @@ $rmalu = $_GET['rmalu'];
           if ($foto && !empty($foto['fotoalu'])) {
             // Gera o caminho completo da imagem
             $fotoPath = $foto['fotoalu'];
-            echo "<img src='../{$fotoPath}' alt='Foto do Aluno' class='img-fluid rounded-circle w-75 h-75'>";
+            echo "<img src='../{$fotoPath}' alt='Foto do Aluno' style='height: 150px;' class='img-fluid rounded-circle'>";
           } else {
             // Exibe um ícone padrão se não houver foto
             echo "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-person-circle' viewBox='0 0 16 16'>
@@ -160,7 +160,7 @@ $rmalu = $_GET['rmalu'];
       </div>
 
       <!-- Coluna Central com Status -->
-      <div class="col-11 col-md-8 border border-black p-2 mx-auto shadow-sm">
+      <div class="col-11 col-md-8 border border-black rounded-2 p-2 mx-auto shadow-sm">
         <h4 class="text-center my-3"><?php echo "$posicaoAtual/$totalVisitas" ?></h4>
         <?php
 
@@ -203,7 +203,7 @@ $rmalu = $_GET['rmalu'];
                   $active = $index === 0 ? 'active' : '';
                   echo "
                     <div class='carousel-item $active h-100'>
-                      <img src='$caminho' class='d-block w-100 h-100 object-fit-cover' alt='Imagem da visita'>
+                      <img src='$caminho' class='d-block w-100 h-100 object-fit-cover rounded-3' alt='Imagem da visita'>
                     </div>";
                 }
                 ?>
@@ -227,7 +227,7 @@ $rmalu = $_GET['rmalu'];
           </div>
           <!-- Maps -->
           <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
-            <div id="map" class="w-100 h-100 border" style="min-height: 300px;"></div>
+            <div id="map" class="w-100 h-100 border rounded-3" style="min-height: 300px;"></div>
           </div>
         </div>
 
@@ -469,10 +469,13 @@ $rmalu = $_GET['rmalu'];
                 .then(response => response.json())
                 .then(data => {
                   if (data.success) {
-                    document.getElementById('pontMes').textContent = `Pontos no mês: ${data.dadosAluno.pontmesGeral}`;
-                    document.getElementById('pontAno').textContent = `Pontos no ano: ${data.dadosAluno.pontanoGeral}`;
+                    document.getElementById('pontMes').textContent =
+                      `Pontos no mês: ${data.dadosAluno.pontmesGeral}`;
+                    document.getElementById('pontAno').textContent =
+                      `Pontos no ano: ${data.dadosAluno.pontanoGeral}`;
 
-                    mostrarModal("Visita recusada com sucesso e pontos reajustados!");
+                    mostrarModal(
+                      "Visita recusada com sucesso e pontos reajustados!");
                   } else {
                     mostrarModal(data.message);
                   }
