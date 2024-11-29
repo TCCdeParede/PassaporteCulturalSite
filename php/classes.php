@@ -75,18 +75,18 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                     <select class="form-select selectCustom" id="classe" name="classe"
                         aria-label="Floating label select example" onchange="updateClass(this.value)">
                         <option></option>
-                        <option value="1eaa" name="1eaa">1EAA</option>
-                        <option value="1eab" name="1eab">1EAB</option>
                         <option value="1dsa" name="1dsa">1DSA</option>
                         <option value="1dsb" name="1dsb">1DSB</option>
-                        <option value="2eaa" name="2eaa">2EAA</option>
-                        <option value="2eab" name="2eab">2EAB</option>
+                        <option value="1eaa" name="1eaa">1EAA</option>
+                        <option value="1eab" name="1eab">1EAB</option>
                         <option value="2dsa" name="2dsa">2DSA</option>
                         <option value="2dsb" name="2dsb">2DSB</option>
+                        <option value="2eaa" name="2eaa">2EAA</option>
+                        <option value="2eab" name="2eab">2EAB</option>
+                        <option value="3dsa" name="3dsa">3DSA</option>
+                        <option value="3dsb" name="3dsb">3DSB</option>
                         <option value="3eaa" name="3eaa">3EAA</option>
                         <option value="3eab" name="3eab">3EAB</option>
-                        <option value="3dsa" name="3dsa">3DSA</option>
-                        <option value="3dsb" name="3DSB">3DSB</option>
                     </select>
                     <label for="classe" class="labelSelectCustom">Selecione uma sala</label>
                 </div>
@@ -122,7 +122,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                             <th rowspan="2" scope="col">Nome</th>
                             <th rowspan="2" scope="col">Email</th>
                             <?php if ($isAdmin) {
-                                echo "<th rowspan='2' colspan='2' scope='colgroup'>Ações</th>";
+                                echo "<th rowspan='2' colspan='2' scope='colgroup' style='border-bottom: none;'>Ações</th>";
                             } ?>
                             <th rowspan="1" colspan="2" scope="colgroup">Pontuação Geral:</th>
                             <th rowspan="1" colspan="2" scope="colgroup">Pontuação a Computar:</th>
@@ -183,26 +183,26 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                         <td>$emailalu</td>";
                                     if ($isAdmin) {
                                         echo "
-                        <td>
-                            <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
-                        </td>
-                        <td>
-                            <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
-                        </td>";
+                                            <td>
+                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('edit', { rmalu: '$rmalu', nomealu: '$nomealu', emailalu: '$emailalu', nometur: '$classe'})\" style='cursor: pointer;'>Editar</a>
+                                            </td>
+                                            <td>
+                                                <a class='link-offset-2 link-offset-3-hover link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover' onclick=\"openModal('delete', { rmalu: '$rmalu' })\" style='cursor: pointer;'>Excluir</a>
+                                            </td>";
                                     }
                                     echo "
-                        <td>$pontGeralAno</td>
-                        <td>$pontGeralMes</td>
-                        <td>$pontCompAno</td>
-                        <td>$pontCompMes</td>
-                    </tr>";
+                                            <td>$pontGeralAno</td>
+                                            <td>$pontGeralMes</td>
+                                            <td>$pontCompAno</td>
+                                            <td>$pontCompMes</td>
+                                        </tr>";
                                 }
                             } else {
                                 $colspan = $isAdmin ? 11 : 7;
                                 echo "
-                <tr>
-                    <td colspan='$colspan' class='text-center'>Nenhum aluno encontrado</td>
-                </tr>";
+                                    <tr>
+                                        <td colspan='$colspan' class='text-center'>Nenhum aluno encontrado</td>
+                                    </tr>";
                             }
                         }
                         ?>
@@ -220,17 +220,16 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
                         $colspan = $isAdmin ? 5 : 3;
                         echo "
-        <tr>
-            <th colspan='$colspan' scope='row'>Pontuação da Sala: </th>
-            <td>$pontGeralAnualTurma</td>
-            <td>$pontGeralMensalTurma</td>
-            <td>$pontCompGeral</td>
-            <td>$pontCompMensal</td>
-        </tr>";
+                            <tr>
+                                <th colspan='$colspan' scope='row'>Pontuação da Sala: </th>
+                                <td>$pontGeralAnualTurma</td>
+                                <td>$pontGeralMensalTurma</td>
+                                <td>$pontCompGeral</td>
+                                <td>$pontCompMensal</td>
+                            </tr>";
                         ?>
                     </tfoot>
                 </table>
-
             </div>
 
             <?php if ($isAdmin): ?>
@@ -252,11 +251,11 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
     <!-- FIM FOOTER -->
 
     <!-- MODAL -->
-    <div id="myModal" class="modal">
+    <div id="myModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
-            <div id="modalBody">
-            </div>
+            <div id="modalMessage" class="alert d-none"></div>
+            <div id="modalBody"></div>
             <div id="modalFooter" class="mt-2 d-flex justify-content-evenly">
                 <button id="modalConfirmBtn" class="btn btn-primary buttonCustom">Confirmar</button>
                 <button id="modalCancelBtn" class="btn btn-secondary buttonCustom"
@@ -280,6 +279,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
             const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 
             modalBody.innerHTML = "";
+            clearModalMessage();
             modalConfirmBtn.onclick = handleModalConfirm;
 
             if (action === "edit") {
@@ -292,8 +292,27 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 <label for="emailalu">Email:</label>
                 <input class='form-control' type="email" id="emailalu" value="${studentData.emailalu}">
                 <label for="nometur">Turma:</label>
-                <input class='form-control' type="text" id="nometur" value="${studentData.nometur}">
-        `;
+                <select class='form-control' id="nometur">
+                    <option></option>
+                </select>
+            `;
+
+                fetch("getTurmas.php")
+                    .then(response => response.json())
+                    .then(turmas => {
+                        const turmaSelect = document.getElementById("nometur");
+                        turmas.forEach(turma => {
+                            const option = document.createElement("option");
+                            option.value = turma.nometur;
+                            option.textContent = turma.nometur;
+                            if (studentData && turma.nometur === studentData.nometur) {
+                                option.selected = true;
+                            }
+                            turmaSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar turmas:", error));
+
             } else if (action === "create") {
                 modalTitle.textContent = "Adicionar Novo Aluno";
                 modalBody.innerHTML = `
@@ -304,8 +323,24 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 <label for="emailalu">Email:</label>
                 <input class='form-control' type="email" id="emailalu">
                 <label for="nometur">Turma:</label>
-                <input class='form-control' type="text" id="nometur">
-        `;
+                <select class='form-control' id="nometur">
+                    <option></option>
+                </select>
+            `;
+
+                fetch("getTurmas.php")
+                    .then(response => response.json())
+                    .then(turmas => {
+                        const turmaSelect = document.getElementById("nometur");
+                        turmas.forEach(turma => {
+                            const option = document.createElement("option");
+                            option.value = turma.nometur;
+                            option.textContent = turma.nometur;
+                            turmaSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar turmas:", error));
+
             } else if (action === "delete") {
                 modalTitle.textContent = "Excluir Aluno";
                 modalBody.innerHTML = `<p>Tem certeza de que deseja excluir o registro do aluno de RM ${studentData.rmalu}?</p>`;
@@ -316,14 +351,32 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
         }
 
         function closeModal() {
-            document.body.classList.remove('modal-active');
             const modal = document.getElementById("myModal");
             modal.style.display = "none";
+            document.body.classList.remove('modal-active');
             currentAction = null;
             currentStudentId = null;
+            clearModalMessage();
+        }
+
+        function showModalMessage(message, type = "success") {
+            const modalMessage = document.getElementById("modalMessage");
+            modalMessage.textContent = message;
+            modalMessage.className = `alert alert-${type} mt-2`;
+            modalMessage.classList.remove("d-none");
+        }
+
+        function clearModalMessage() {
+            const modalMessage = document.getElementById("modalMessage");
+            modalMessage.className = "alert d-none";
+            modalMessage.textContent = "";
         }
 
         function handleModalConfirm() {
+            clearModalMessage();
+            const modalConfirmBtn = document.getElementById("modalConfirmBtn");
+            modalConfirmBtn.disabled = true;
+
             if (currentAction === "edit" || currentAction === "create") {
                 const rmalu = document.getElementById("rmalu").value;
                 const nomealu = document.getElementById("nomealu").value;
@@ -343,14 +396,19 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);
+                        showModalMessage(data.message, data.success ? "success" : "danger");
                         if (data.success) {
-                            window.location.reload();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            modalConfirmBtn.disabled = false;
                         }
                     })
                     .catch(error => {
                         console.error("Erro:", error);
-                        alert("Ocorreu um erro ao tentar processar a requisição.");
+                        showModalMessage("Ocorreu um erro ao tentar processar a requisição.", "danger");
+                        modalConfirmBtn.disabled = false;
                     });
             } else if (currentAction === "delete") {
                 fetch("deletarAluno.php", {
@@ -362,23 +420,25 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);
+                        showModalMessage(data.message, data.success ? "success" : "danger");
                         if (data.success) {
-                            window.location.reload();
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
-                            console.error('Erro: ', data.message);
+                            modalConfirmBtn.disabled = false;
                         }
                     })
                     .catch(error => {
                         console.error("Erro:", error);
-                        alert("Erro ao tentar excluir o aluno.");
+                        showModalMessage("Erro ao tentar excluir o aluno.", "danger");
+                        modalConfirmBtn.disabled = false;
                     });
             }
-
-            closeModal();
         }
     </script>
     <!-- FIM ABRIR/FECHAR MODAL -->
+
 
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

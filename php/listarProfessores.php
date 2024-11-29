@@ -123,7 +123,8 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                     </tbody>
                 </table>
             </div>
-            <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar Professor</button>
+            <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar
+                Professor</button>
         </div>
     </main>
     <!-- FIM MAIN -->
@@ -139,20 +140,20 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
     <!-- FIM FOOTER -->
 
     <!-- MODAL -->
-    <div id="myModal" class="modal">
+    <div id="myModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
-            <div id="modalBody">
-            </div>
+            <div id="modalMessage" class="alert d-none"></div>
+            <div id="modalBody"></div>
             <div id="modalFooter" class="mt-2 d-flex justify-content-evenly">
                 <button id="modalConfirmBtn" class="btn btn-primary buttonCustom">Confirmar</button>
-                <button id="modalCancelBtn" class="btn btn-secondary buttonCustom" onclick="closeModal()">Cancelar</button>
+                <button id="modalCancelBtn" class="btn btn-secondary buttonCustom"
+                    onclick="closeModal()">Cancelar</button>
             </div>
         </div>
     </div>
     <!-- FIM MODAL -->
 
-    <!-- ABRIR/FECHAR MODAL -->
     <script>
         let currentAction = null;
         let currentStudentId = null;
@@ -166,6 +167,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
             const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 
             modalBody.innerHTML = "";
+            clearModalMessage();
             modalConfirmBtn.onclick = handleModalConfirm;
 
             if (action === "edit") {
@@ -177,7 +179,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 <input class='form-control' type="text" id="nomeprof" value="${studentData.nomeprof}">
                 <label for="emailprof">Email:</label>
                 <input class='form-control' type="email" id="emailprof" value="${studentData.emailprof}">
-        `;
+            `;
             } else if (action === "create") {
                 modalTitle.textContent = "Adicionar Novo Professor";
                 modalBody.innerHTML = `
@@ -187,7 +189,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 <input class='form-control' type="text" id="nomeprof">
                 <label for="emailprof">Email:</label>
                 <input class='form-control' type="email" id="emailprof">
-        `;
+            `;
             } else if (action === "delete") {
                 modalTitle.textContent = "Excluir Professor";
                 modalBody.innerHTML = `<p>Tem certeza de que deseja excluir o registro do professor de RM ${studentData.rmprof}?</p>`;
@@ -198,14 +200,32 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
         }
 
         function closeModal() {
-            document.body.classList.remove('modal-active');
             const modal = document.getElementById("myModal");
             modal.style.display = "none";
+            document.body.classList.remove('modal-active');
             currentAction = null;
             currentStudentId = null;
+            clearModalMessage();
+        }
+
+        function showModalMessage(message, type = "success") {
+            const modalMessage = document.getElementById("modalMessage");
+            modalMessage.textContent = message;
+            modalMessage.className = `alert alert-${type} mt-2`;
+            modalMessage.classList.remove("d-none");
+        }
+
+        function clearModalMessage() {
+            const modalMessage = document.getElementById("modalMessage");
+            modalMessage.className = "alert d-none";
+            modalMessage.textContent = "";
         }
 
         function handleModalConfirm() {
+            clearModalMessage();
+            const modalConfirmBtn = document.getElementById("modalConfirmBtn");
+            modalConfirmBtn.disabled = true;
+
             if (currentAction === "edit" || currentAction === "create") {
                 const rmprof = document.getElementById("rmprof").value;
                 const nomeprof = document.getElementById("nomeprof").value;
@@ -218,53 +238,60 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
                 const url = currentAction === "edit" ? "editarProfessor.php" : "adicionarProfessor.php";
                 fetch(url, {
-                        method: "POST",
-                        body: formData,
-                    })
+                    method: "POST",
+                    body: formData,
+                })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);
+                        showModalMessage(data.message, data.success ? "success" : "danger");
                         if (data.success) {
-                            window.location.reload();
+                            setTimeout(() => {
+                                closeModal();
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            modalConfirmBtn.disabled = false;
                         }
                     })
                     .catch(error => {
                         console.error("Erro:", error);
-                        alert("Ocorreu um erro ao tentar processar a requisição.");
+                        showModalMessage("Ocorreu um erro ao tentar processar a requisição.", "danger");
+                        modalConfirmBtn.disabled = false;
                     });
             } else if (currentAction === "delete") {
                 fetch("deletarProfessor.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                        body: `rmprof=${encodeURIComponent(currentStudentId)}`,
-                    })
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `rmprof=${encodeURIComponent(currentStudentId)}`,
+                })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);
+                        showModalMessage(data.message, data.success ? "success" : "danger");
                         if (data.success) {
-                            window.location.reload();
+                            setTimeout(() => {
+                                closeModal();
+                                window.location.reload();
+                            }, 1500);
                         } else {
-                            console.error('Erro: ', data.message);
+                            modalConfirmBtn.disabled = false;
                         }
                     })
                     .catch(error => {
                         console.error("Erro:", error);
-                        alert("Erro ao tentar excluir o aluno.");
+                        showModalMessage("Erro ao tentar excluir o professor.", "danger");
+                        modalConfirmBtn.disabled = false;
                     });
             }
-
-            closeModal();
         }
     </script>
-    <!-- FIM ABRIR/FECHAR MODAL -->
+
 
     <!-- BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
-    </script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
 </body>
 
 </html>
