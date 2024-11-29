@@ -2,12 +2,10 @@
 session_start();
 include 'conexao.php';
 
-// Receber dados do formulário
 $rm = trim($_POST['rm'] ?? '');
 $senha = trim($_POST['senha'] ?? '');
 $tipoLogin = $_POST['tipoLogin'] ?? '';
 
-// Verificar se os campos foram preenchidos
 if (empty($rm) || empty($senha)) {
     $_SESSION['errorRm'] = 'Preencha todos os campos.';
     header("Location: login.php");
@@ -16,7 +14,6 @@ if (empty($rm) || empty($senha)) {
 
 // Verificação para login como administrador
 if ($tipoLogin === 'administrador') {
-    // O admid pode ser um valor genérico de 5 dígitos
     $sql = "SELECT admid, admsenha FROM admin WHERE admid = ?";
     $stmt = $conexao->prepare($sql);
 
@@ -53,7 +50,6 @@ if ($tipoLogin === 'administrador') {
     $stmt->close();
     $conexao->close();
 } else {
-    // Verificação de login de professor
     if (!preg_match('/^\d{5}$/', $rm)) {
         $_SESSION['errorRm'] = 'O RM deve conter exatamente 5 dígitos.';
         header("Location: login.php");
@@ -80,7 +76,6 @@ if ($tipoLogin === 'administrador') {
     $stmt->bind_result($rmprof, $profsenha, $nomeprof);
 
     if ($stmt->fetch()) {
-        // Verificar a senha criptografada
         if (password_verify($senha, $profsenha)) {
             $_SESSION['rmprof'] = $rmprof;
             $_SESSION['nomeprof'] = $nomeprof;

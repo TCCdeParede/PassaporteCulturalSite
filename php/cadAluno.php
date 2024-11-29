@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $uploadPath = $uploadDir . $fotoNome;
 
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true); // Cria o diretório se não existir
+            mkdir($uploadDir, 0755, true);
         }
 
         if (move_uploaded_file($fotoalu['tmp_name'], $uploadPath)) {
-            $relativePath = "/uploads/alunos/$fotoNome"; // Caminho relativo
+            $relativePath = "/uploads/alunos/$fotoNome";
             $sql = "INSERT INTO alunos (rmalu, nomealu, emailalu, fotoalu, alusenha, pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur)
                     VALUES (?, ?, ?, ?, ?, 0, 0, 0, 0, ?)";
             $stmt = $conexao->prepare($sql);

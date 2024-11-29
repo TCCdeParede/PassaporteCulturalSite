@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             "turma" => $user['nometur'],
             "pontos" => $user['pontcompmesAluno'],
             "rm" => $user['rmalu'],
-            "foto" => $user['fotoalu'] // Incluímos a foto aqui
+            "foto" => $user['fotoalu']
         ]);
     } else {
         echo json_encode(["status" => "error", "message" => "Credenciais inválidas"]);

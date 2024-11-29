@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Erro ao atualizar os dados do aluno');
         }
 
-        // Se houve mudança de turma, ajustar qtdalu nas turmas antigas e novas
         if ($turmaAlterada) {
             $querySubtrair = "UPDATE turma SET qtdalu = qtdalu - 1 WHERE nometur = ?";
             $stmtSubtrair = $conexao->prepare($querySubtrair);

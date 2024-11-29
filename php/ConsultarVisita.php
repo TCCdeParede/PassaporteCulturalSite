@@ -391,11 +391,9 @@ $rmalu = $_GET['rmalu'];
             const novosPontosMes = data.dadosAluno.pontmesGeral;
             const novosPontosAno = data.dadosAluno.pontanoGeral;
 
-            // Atualiza os elementos da página
             document.getElementById('pontMes').textContent = `Pontos no mês: ${novosPontosMes}`;
             document.getElementById('pontAno').textContent = `Pontos no ano: ${novosPontosAno}`;
 
-            // Exibe a mensagem no modal
             mostrarModal("Visita aceita e pontos atualizados com sucesso!");
           } else {
             mostrarModal(data.message);
@@ -404,7 +402,6 @@ $rmalu = $_GET['rmalu'];
         .catch(error => console.error('Erro ao aceitar visita:', error));
     }
 
-    // Esperar o DOM carregar completamente
     document.addEventListener("DOMContentLoaded", function () {
       var modal = document.getElementById("myModal");
 
@@ -415,7 +412,6 @@ $rmalu = $_GET['rmalu'];
           document.getElementById("modalMessage").innerText = "Você aceitou.";
           modal.style.display = "block";
 
-          // Desabilitando botões
           btnAceitar.setAttribute("disabled", "");
           document.getElementById("btnRecusar").setAttribute("disabled", "");
 
@@ -457,7 +453,6 @@ $rmalu = $_GET['rmalu'];
             const rmalu = <?php echo $rmalu ?>;
             const local = "<?php echo $local ?>";
 
-            // Verificar se a visita foi aceita ou pendente
             if (rev === "Aceito") {
               fetch('subtrairPontos.php', {
                 method: 'POST',
@@ -505,16 +500,14 @@ $rmalu = $_GET['rmalu'];
         });
       }
 
-      // Fechar modal ao clicar no botão "Ok"
       const acceptBtn = document.getElementById("acceptBtn");
       if (acceptBtn) {
         acceptBtn.onclick = function () {
-          document.getElementById("modalMessage").innerText = ''; // Limpa qualquer mensagem antiga
+          document.getElementById("modalMessage").innerText = '';
           modal.style.display = "none";
         };
       }
 
-      // Fechar modal ao clicar fora dele
       window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";

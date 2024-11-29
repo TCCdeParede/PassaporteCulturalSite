@@ -9,7 +9,7 @@ if (!isset($_SESSION["tipoLogin"])) {
 
 $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
-if (!isset($_GET['rev'])){
+if (!isset($_GET['rev'])) {
   $_GET['rev'] = 'Pendente';
 }
 
@@ -80,10 +80,14 @@ $rev = $_GET['rev'];
     <div class="col-lg-6 mx-auto">
       <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Visitas</h1>
       <form method="GET" action="" id="filtroForm">
-        <select class="form-select w-50 mx-auto selectCustom" name="rev" onchange="document.getElementById('filtroForm').submit();">
-          <option value="Pendente" <?php if ($_GET['rev'] === 'Pendente') echo 'selected'; ?>>Pendentes</option>
-          <option value="Aceito" <?php if ($_GET['rev'] === 'Aceito') echo 'selected'; ?>>Aprovadas</option>
-          <option value="Não aceito" <?php if ($_GET['rev'] === 'Não aceito') echo 'selected'; ?>>Recusadas</option>
+        <select class="form-select w-50 mx-auto selectCustom" name="rev"
+          onchange="document.getElementById('filtroForm').submit();">
+          <option value="Pendente" <?php if ($_GET['rev'] === 'Pendente')
+            echo 'selected'; ?>>Pendentes</option>
+          <option value="Aceito" <?php if ($_GET['rev'] === 'Aceito')
+            echo 'selected'; ?>>Aprovadas</option>
+          <option value="Não aceito" <?php if ($_GET['rev'] === 'Não aceito')
+            echo 'selected'; ?>>Recusadas</option>
         </select>
       </form>
       <div class="table-responsive mt-3">
@@ -102,7 +106,7 @@ $rev = $_GET['rev'];
             <?php
             include "conexao.php";
 
-            $rev = $_GET['rev'] ?? 'Pendente'; // Default para pendentes
+            $rev = $_GET['rev'] ?? 'Pendente';
             $sqlcode = "SELECT * FROM visita WHERE rev = '$rev'";
 
             $sqlquery = $conexao->query($sqlcode);

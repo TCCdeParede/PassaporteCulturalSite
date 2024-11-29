@@ -34,7 +34,6 @@ if (isset($_GET['token'])) {
                 exit;
             }
 
-            // Exibe a mensagem de erro no modal
             echo "<script>window.onload = function() { showModal('$message'); }</script>";
         }
     } else {
@@ -125,7 +124,6 @@ if (isset($_GET['token'])) {
             document.getElementById('myModal').style.display = 'block';
         }
 
-        // Fechar o modal ao clicar no botão "Ok"
         document.getElementById('acceptBtn').addEventListener('click', function () {
             document.getElementById('myModal').style.display = 'none';
         });

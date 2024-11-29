@@ -31,7 +31,6 @@ switch ($local) {
         $pontuacao = 0;
 }
 
-// Buscar dados do aluno
 $queryAluno = "SELECT pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur FROM alunos WHERE rmalu = ?";
 $stmtAluno = $conexao->prepare($queryAluno);
 $stmtAluno->bind_param("i", $rmalu);
@@ -60,7 +59,6 @@ if (in_array($mesAtual, $ferias)) {
     $pontuacaoExcedente = 0;
 }
 
-// Atualizar pontuações do aluno
 $novoPontMesGeral = $aluno['pontmesGeralAluno'] + $pontuacao;
 $novoPontAnoGeral = $aluno['pontanoGeralAluno'] + $pontuacao;
 $novoPontCompMes = $aluno['pontcompmesAluno'] + $pontuacaoComputada;

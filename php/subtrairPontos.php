@@ -18,7 +18,6 @@ if (empty($motivo)) {
 }
 $rmalu = $data['rmalu'];
 
-// Consulta o local da visita e os pontos correspondentes
 $sql = "SELECT local FROM visita WHERE idfoto = ?";
 $stmt = $conexao->prepare($sql);
 $stmt->bind_param("i", $idvisita);
@@ -26,7 +25,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $local = $result->fetch_assoc()['local'];
 
-// Define os pontos conforme o local
 $pontuacao = 0;
 switch ($local) {
     case 'Show':
@@ -51,13 +49,11 @@ switch ($local) {
         $pontuacao = 0;
 }
 
-// Atualiza a visita para "Não aceito" e registra o motivo
 $sqlUpdate = "UPDATE visita SET rev = 'Não aceito', motivo = ? WHERE idfoto = ?";
 $stmtUpdate = $conexao->prepare($sqlUpdate);
 $stmtUpdate->bind_param("si", $motivo, $idvisita);
 $stmtUpdate->execute();
 
-// Buscar dados do aluno e sua turma
 $queryAluno = "SELECT pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur FROM alunos WHERE rmalu = ?";
 $stmtAluno = $conexao->prepare($queryAluno);
 $stmtAluno->bind_param("i", $rmalu);
@@ -70,7 +66,6 @@ if (!$aluno) {
     exit;
 }
 
-// Subtrai os pontos do aluno
 $novoPontMesGeral = max(0, $aluno['pontmesGeralAluno'] - $pontuacao);
 $novoPontAnoGeral = max(0, $aluno['pontanoGeralAluno'] - $pontuacao);
 $novoPontCompMes = max(0, $aluno['pontcompmesAluno'] - $pontuacao);
@@ -112,7 +107,6 @@ if ($turma) {
     $stmtUpdateTurma->execute();
 }
 
-// Retornar dados atualizados para exibição
 echo json_encode([
     'success' => true,
     'message' => 'Visita recusada e pontuações atualizadas.',

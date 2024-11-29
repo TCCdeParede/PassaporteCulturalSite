@@ -143,7 +143,6 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
             <div id="modalBody">
-                <!-- O conteúdo do modal será dinamicamente preenchido -->
             </div>
             <div id="modalFooter" class="mt-2 d-flex justify-content-evenly">
                 <button id="modalConfirmBtn" class="btn btn-primary buttonCustom">Confirmar</button>

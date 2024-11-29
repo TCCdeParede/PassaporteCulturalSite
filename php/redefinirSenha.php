@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->setFrom('tccdaparede2024@gmail.com', 'Passaporte Cultural');
             $mail->addAddress($email);
 
-            // Conteúdo do e-mail
+            // Conteúdo do email
             $mail->isHTML(true);
             $mail->Subject = 'Redefinição de Senha';
             $mail->Body = "
@@ -70,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = "E-mail não encontrado. Verifique e tente novamente.";
     }
 
-    // Se houver status de sucesso, redireciona
     if ($status === 'email_sent') {
         header("Location: login.php?status=email_sent");
         exit;
@@ -150,7 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </script>
 
     <script>
-        // Exibir o modal caso haja mensagem de erro
         const message = "<?= $message ?>";
         if (message) {
             const modal = document.getElementById('myModal');

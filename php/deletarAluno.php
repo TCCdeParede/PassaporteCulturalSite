@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    // Obter o nometur do aluno
     $query = $conexao->prepare("SELECT nometur FROM alunos WHERE rmalu = ?");
     $query->bind_param("s", $rmalu);
     $query->execute();
@@ -26,12 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $row = $result->fetch_assoc();
     $nometur = $row["nometur"];
 
-    // Excluir o aluno
     $deleteQuery = $conexao->prepare("DELETE FROM alunos WHERE rmalu = ?");
     $deleteQuery->bind_param("s", $rmalu);
 
     if ($deleteQuery->execute()) {
-        // Reduzir qtdalu na tabela turma
         $updateQuery = $conexao->prepare("UPDATE turma SET qtdalu = qtdalu - 1 WHERE nometur = ?");
         $updateQuery->bind_param("s", $nometur);
         $updateQuery->execute();

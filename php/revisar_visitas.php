@@ -3,14 +3,13 @@ header("Content-Type: application/json");
 require_once 'conexao.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Verificar se o rmalu foi passado
     $rmalu = isset($_GET['rmalu']) ? $_GET['rmalu'] : null;
 
     if ($rmalu) {
-        // Listar visitas pendentes do aluno específico
+        // Listar visitas pendentes do aluno
         $query = "SELECT v.*, a.nomealu, v.motivo FROM visita v JOIN alunos a ON v.rmalu = a.rmalu WHERE v.rmalu = ?";
         $stmt = $conexao->prepare($query);
-        $stmt->bind_param("s", $rmalu); // Passando o rmalu para a consulta
+        $stmt->bind_param("s", $rmalu);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -52,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Atualizar status da visita
     $data = json_decode(file_get_contents("php://input"), true);
     $idfoto = $data['idfoto'];
     $rev = $data['rev'];

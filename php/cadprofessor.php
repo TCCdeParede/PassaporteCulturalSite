@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'conexao.php'; // Conexão com o banco de dados
+include 'conexao.php'; 
 
 // Ativar exibição de erros para depuração
 ini_set('display_errors', 1);

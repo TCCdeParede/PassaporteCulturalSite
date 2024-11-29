@@ -234,7 +234,8 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
             </div>
 
             <?php if ($isAdmin): ?>
-                <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar Aluno</button>
+                <button class="btn btn-primary w-50 py-2 buttonCustom mt-3" onclick="openModal('create')">Adicionar
+                    Aluno</button>
             <?php endif; ?>
         </div>
     </main>
@@ -255,11 +256,11 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
         <div class="modal-content">
             <h3 id="modalTitle"></h3>
             <div id="modalBody">
-                <!-- O conteúdo do modal será dinamicamente preenchido -->
             </div>
             <div id="modalFooter" class="mt-2 d-flex justify-content-evenly">
                 <button id="modalConfirmBtn" class="btn btn-primary buttonCustom">Confirmar</button>
-                <button id="modalCancelBtn" class="btn btn-secondary buttonCustom" onclick="closeModal()">Cancelar</button>
+                <button id="modalCancelBtn" class="btn btn-secondary buttonCustom"
+                    onclick="closeModal()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -337,9 +338,9 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
 
                 const url = currentAction === "edit" ? "editarAluno.php" : "adicionarAluno.php";
                 fetch(url, {
-                        method: "POST",
-                        body: formData,
-                    })
+                    method: "POST",
+                    body: formData,
+                })
                     .then(response => response.json())
                     .then(data => {
                         alert(data.message);
@@ -353,12 +354,12 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                     });
             } else if (currentAction === "delete") {
                 fetch("deletarAluno.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/x-www-form-urlencoded",
-                        },
-                        body: `rmalu=${encodeURIComponent(currentStudentId)}`,
-                    })
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `rmalu=${encodeURIComponent(currentStudentId)}`,
+                })
                     .then(response => response.json())
                     .then(data => {
                         alert(data.message);
