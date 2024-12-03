@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Logo do GitHub -->
             <ul class="nav justify-content-center justify-content-md-end">
                 <li class="ms-3">
-                    <a class="text-body-secondary" href="#">
+                    <a class="text-body-secondary" href="https://github.com/TCCdeParede" target="_blank">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-github" viewBox="0 0 16 16">
                             <path

@@ -125,13 +125,10 @@ if (isset($_GET['status'])) {
   <div class="container">
     <footer
       class="d-flex flex-column flex-md-row justify-content-between align-items-center text-center mt-2 py-1 border-top border-dark">
-      <!-- Texto centralizado -->
       <span class="mb-3 mb-md-0">© 2024 Passaporte Cultural Digital</span>
-
-      <!-- Logo do GitHub -->
       <ul class="nav justify-content-center justify-content-md-end">
         <li class="ms-3">
-          <a class="text-body-secondary" href="#">
+          <a class="text-body-secondary" href="https://github.com/TCCdeParede" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-github"
               viewBox="0 0 16 16">
               <path
