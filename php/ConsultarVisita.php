@@ -298,10 +298,9 @@ $rmalu = $_GET['rmalu'];
           $motivoQuery = $conexao->query($sqlMotivo);
           $motivo = $motivoQuery ? trim($motivoQuery->fetch_assoc()['motivo'] ?? '') : '';
           ?>
-          <textarea class="form-control" rows="5" placeholder="Explique o motivo da recusa..." style="resize: none"
-            <?php echo ($rev === 'Não aceito') ? 'readonly' : ''; ?>>
-            <?php echo htmlspecialchars($motivo); ?>
-        </textarea>
+          <textarea class="form-control" placeholder="Explique o motivo da recusa..."
+            style="resize: none; height: 100px;" <?php echo ($rev === 'Não aceito') ? 'readonly' : ''; ?>>
+<?php echo htmlspecialchars($motivo); ?></textarea>
 
           <?php if ($rev !== 'Não aceito'): ?>
             <button class="btn btn-primary my-3 w-100 buttonCustom" id="btnEnviarRecusa">

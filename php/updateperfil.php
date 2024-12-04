@@ -5,42 +5,46 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 include "conexao.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['rmalu'], $_POST['nomealu'])) { // Verifica se os dados essenciais estão presentes
+    if (isset($_POST['rmalu'], $_POST['nomealu'])) {
         $rmalu = $_POST['rmalu'];
         $nomealu = $_POST['nomealu'];
-        
-        // Inicializa a variável fotoPath com o valor atual da foto
+
         $fotoPath = null;
 
-        // Se o usuário enviou uma nova foto, processa o upload
+        $sqlSelect = "SELECT fotoalu FROM alunos WHERE rmalu = ?";
+        $stmtSelect = $conexao->prepare($sqlSelect);
+        $stmtSelect->bind_param("i", $rmalu);
+        $stmtSelect->execute();
+        $result = $stmtSelect->get_result();
+        $currentPhoto = $result->fetch_assoc()['fotoalu'];
+
         if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == 0) {
             $profileImage = $_FILES['profileImage'];
-            
-            // Processar a imagem
             $fotoNome = uniqid() . '.' . pathinfo($profileImage['name'], PATHINFO_EXTENSION);
             $uploadDir = '../uploads/alunos/';
             $uploadPath = $uploadDir . $fotoNome;
 
             if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0755, true); // Cria o diretório se não existir
+                mkdir($uploadDir, 0755, true);
             }
 
             if (move_uploaded_file($profileImage['tmp_name'], $uploadPath)) {
-                $fotoPath = "/uploads/alunos/$fotoNome"; // Caminho relativo
+                $fotoPath = "/uploads/alunos/$fotoNome";
+
+                if ($currentPhoto && file_exists("..$currentPhoto")) {
+                    unlink("..$currentPhoto");
+                }
             } else {
                 echo json_encode(["error" => "Erro ao fazer upload da imagem"]);
                 exit;
             }
         }
 
-        // Atualizar o banco de dados com o novo nome e, se houver, a nova foto
         if ($fotoPath) {
-            // Caso a foto tenha sido alterada
             $sql = "UPDATE alunos SET nomealu = ?, fotoalu = ? WHERE rmalu = ?";
             $stmt = $conexao->prepare($sql);
             $stmt->bind_param("ssi", $nomealu, $fotoPath, $rmalu);
         } else {
-            // Caso a foto não tenha sido alterada
             $sql = "UPDATE alunos SET nomealu = ? WHERE rmalu = ?";
             $stmt = $conexao->prepare($sql);
             $stmt->bind_param("si", $nomealu, $rmalu);
