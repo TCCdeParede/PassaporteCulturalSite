@@ -29,12 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pontmesGeral = $row["pontmesGeralAluno"];
     $pontanoGeral = $row["pontanoGeralAluno"];
 
-    // Deleta o aluno
     $deleteQuery = $conexao->prepare("DELETE FROM alunos WHERE rmalu = ?");
     $deleteQuery->bind_param("s", $rmalu);
 
     if ($deleteQuery->execute()) {
-        // Subtrai os pontos do aluno da turma
         $updateQuery = $conexao->prepare("UPDATE turma SET pontcompmensalTurma = pontcompmensalTurma - ?, pontcompgeralTurma = pontcompgeralTurma - ?, pontmesGeralTurma = pontmesGeralTurma - ?, pontanualGeralTurma = pontanualGeralTurma - ? WHERE nometur = ?");
         $updateQuery->bind_param("iiiis", $pontcompmes, $pontcompano, $pontmesGeral, $pontanoGeral, $nometur);
         $updateQuery->execute();
