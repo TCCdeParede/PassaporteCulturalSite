@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    $query = $conexao->prepare("SELECT nometur FROM alunos WHERE rmalu = ?");
+    $query = $conexao->prepare("SELECT nometur, pontcompmesAluno, pontcompanoAluno, pontmesGeralAluno, pontanoGeralAluno FROM alunos WHERE rmalu = ?");
     $query->bind_param("s", $rmalu);
     $query->execute();
     $result = $query->get_result();
@@ -24,13 +24,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $row = $result->fetch_assoc();
     $nometur = $row["nometur"];
+    $pontcompmes = $row["pontcompmesAluno"];
+    $pontcompano = $row["pontcompanoAluno"];
+    $pontmesGeral = $row["pontmesGeralAluno"];
+    $pontanoGeral = $row["pontanoGeralAluno"];
 
+    // Deleta o aluno
     $deleteQuery = $conexao->prepare("DELETE FROM alunos WHERE rmalu = ?");
     $deleteQuery->bind_param("s", $rmalu);
 
     if ($deleteQuery->execute()) {
-        $updateQuery = $conexao->prepare("UPDATE turma SET qtdalu = qtdalu - 1 WHERE nometur = ?");
-        $updateQuery->bind_param("s", $nometur);
+        // Subtrai os pontos do aluno da turma
+        $updateQuery = $conexao->prepare("UPDATE turma SET pontcompmensalTurma = pontcompmensalTurma - ?, pontcompgeralTurma = pontcompgeralTurma - ?, pontmesGeralTurma = pontmesGeralTurma - ?, pontanualGeralTurma = pontanualGeralTurma - ? WHERE nometur = ?");
+        $updateQuery->bind_param("iiiis", $pontcompmes, $pontcompano, $pontmesGeral, $pontanoGeral, $nometur);
         $updateQuery->execute();
 
         echo json_encode(["success" => true, "message" => "Aluno excluído com sucesso."]);

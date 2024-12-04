@@ -14,12 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Obter a turma atual do aluno antes de atualizar os dados
-        $queryGetTurmaAntiga = "SELECT nometur FROM alunos WHERE rmalu = ?";
+        $queryGetTurmaAntiga = "SELECT nometur, pontcompmesAluno, pontcompanoAluno, pontmesGeralAluno, pontanoGeralAluno FROM alunos WHERE rmalu = ?";
         $stmtGetTurmaAntiga = $conexao->prepare($queryGetTurmaAntiga);
         $stmtGetTurmaAntiga->bind_param('i', $rmalu);
         $stmtGetTurmaAntiga->execute();
-        $stmtGetTurmaAntiga->bind_result($turmaAntiga);
+        $stmtGetTurmaAntiga->bind_result($turmaAntiga, $pontcompmesAntiga, $pontcompanoAntiga, $pontmesGeralAntiga, $pontanoGeralAntiga);
         $stmtGetTurmaAntiga->fetch();
         $stmtGetTurmaAntiga->close();
 
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $turmaAlterada = ($turmaAntiga !== $nometur);
 
         $conexao->begin_transaction();
-
         $sql = "UPDATE alunos SET nomealu = ?, emailalu = ?, nometur = ? WHERE rmalu = ?";
         $stmt = $conexao->prepare($sql);
         $stmt->bind_param('sssi', $nomealu, $emailalu, $nometur, $rmalu);
@@ -37,18 +35,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($turmaAlterada) {
-            $querySubtrair = "UPDATE turma SET qtdalu = qtdalu - 1 WHERE nometur = ?";
-            $stmtSubtrair = $conexao->prepare($querySubtrair);
-            $stmtSubtrair->bind_param('s', $turmaAntiga);
-            if (!$stmtSubtrair->execute()) {
-                throw new Exception('Erro ao subtrair 1 da qtdalu da turma antiga');
+            $querySubtrairPontos = "UPDATE turma SET pontcompmensalTurma = pontcompmensalTurma - ?, pontcompgeralTurma = pontcompgeralTurma - ?, pontmesGeralTurma = pontmesGeralTurma - ?, pontanualGeralTurma = pontanualGeralTurma - ? WHERE nometur = ?";
+            $stmtSubtrairPontos = $conexao->prepare($querySubtrairPontos);
+            $stmtSubtrairPontos->bind_param('iiiis', $pontcompmesAntiga, $pontcompanoAntiga, $pontmesGeralAntiga, $pontanoGeralAntiga, $turmaAntiga);
+            if (!$stmtSubtrairPontos->execute()) {
+                throw new Exception('Erro ao subtrair pontos da turma antiga');
             }
 
-            $queryAdicionar = "UPDATE turma SET qtdalu = qtdalu + 1 WHERE nometur = ?";
-            $stmtAdicionar = $conexao->prepare($queryAdicionar);
-            $stmtAdicionar->bind_param('s', $nometur);
-            if (!$stmtAdicionar->execute()) {
-                throw new Exception('Erro ao adicionar 1 na qtdalu da nova turma');
+            $queryAdicionarPontos = "UPDATE turma SET pontcompmensalTurma = pontcompmensalTurma + ?, pontcompgeralTurma = pontcompgeralTurma + ?, pontmesGeralTurma = pontmesGeralTurma + ?, pontanualGeralTurma = pontanualGeralTurma + ? WHERE nometur = ?";
+            $stmtAdicionarPontos = $conexao->prepare($queryAdicionarPontos);
+            $stmtAdicionarPontos->bind_param('iiiis', $pontcompmesAntiga, $pontcompanoAntiga, $pontmesGeralAntiga, $pontanoGeralAntiga, $nometur);
+            if (!$stmtAdicionarPontos->execute()) {
+                throw new Exception('Erro ao adicionar pontos à nova turma');
             }
         }
 
@@ -62,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($stmt)) {
             $stmt->close();
         }
-        if (isset($stmtSubtrair)) {
-            $stmtSubtrair->close();
+        if (isset($stmtSubtrairPontos)) {
+            $stmtSubtrairPontos->close();
         }
-        if (isset($stmtAdicionar)) {
-            $stmtAdicionar->close();
+        if (isset($stmtAdicionarPontos)) {
+            $stmtAdicionarPontos->close();
         }
         $conexao->close();
     }
