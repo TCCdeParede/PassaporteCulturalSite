@@ -13,22 +13,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    $stmt = $conexao->prepare("SELECT * FROM alunos WHERE emailalu = ? AND alusenha = ?");
-    $stmt->bind_param("ss", $email, $senha);
+    $stmt = $conexao->prepare("SELECT * FROM alunos WHERE emailalu = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-        echo json_encode([
-            "status" => "success",
-            "message" => "Login bem-sucedido",
-            "nome" => $user['nomealu'],
-            "turma" => $user['nometur'],
-            "pontos" => $user['pontcompmesAluno'],
-            "rm" => $user['rmalu'],
-            "foto" => $user['fotoalu']
-        ]);
+
+        // Verifica a senha com password_verify
+        if (password_verify($senha, $user['alusenha'])) {
+            echo json_encode([
+                "status" => "success",
+                "message" => "Login bem-sucedido",
+                "nome" => $user['nomealu'],
+                "turma" => $user['nometur'],
+                "pontMesGeral" => $user['pontmesGeralAluno'],
+                "pontAnoGeral" => $user['pontanoGeralAluno'],
+                "pontMesComputado" => $user['pontcompmesAluno'],
+                "pontAnoComputado" => $user['pontcompanoAluno'],
+                "rm" => $user['rmalu'],
+                "foto" => $user['fotoalu']
+            ]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Credenciais inválidas"]);
+        }
     } else {
         echo json_encode(["status" => "error", "message" => "Credenciais inválidas"]);
     }

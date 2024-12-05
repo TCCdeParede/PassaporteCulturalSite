@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             echo json_encode(["message" => "Perfil atualizado com sucesso!", "fotoPath" => $fotoPath]);
         } else {
-            echo json_encode(["error" => "Erro ao atualizar perfil: " . $stmt->error]);
+            echo json_encode(["error" => "Erro ao atualizar perfil."]);
         }
     } else {
         echo json_encode(["error" => "Faltam dados para atualizar o perfil."]);

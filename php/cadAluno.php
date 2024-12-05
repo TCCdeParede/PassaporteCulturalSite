@@ -9,6 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $alusenha = $_POST['alusenha'];
         $nometur = $_POST['nometur'];
 
+        // Verificação de senha mínima
+        if (strlen($alusenha) < 8) {
+            echo json_encode(["error" => "A senha deve ter no mínimo 8 caracteres!"]);
+            exit;
+        }
+
+        $alusenhaCriptografada = password_hash($alusenha, PASSWORD_DEFAULT);
+
         $fotoalu = $_FILES['fotoalu'];
         $fotoNome = uniqid() . '.' . pathinfo($fotoalu['name'], PATHINFO_EXTENSION);
         $uploadDir = '../uploads/alunos/';
@@ -23,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $sql = "INSERT INTO alunos (rmalu, nomealu, emailalu, fotoalu, alusenha, pontmesGeralAluno, pontanoGeralAluno, pontcompmesAluno, pontcompanoAluno, nometur)
                     VALUES (?, ?, ?, ?, ?, 0, 0, 0, 0, ?)";
             $stmt = $conexao->prepare($sql);
-            $stmt->bind_param("isssss", $rmalu, $nomealu, $emailalu, $relativePath, $alusenha, $nometur);
+            $stmt->bind_param("isssss", $rmalu, $nomealu, $emailalu, $relativePath, $alusenhaCriptografada, $nometur);
 
             if ($stmt->execute()) {
                 echo json_encode(["message" => "Aluno cadastrado com sucesso!", "fotoPath" => $relativePath]);

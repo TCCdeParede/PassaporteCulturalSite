@@ -41,7 +41,9 @@ CREATE TABLE IF NOT EXISTS professor (
  nomeprof VARCHAR(255) NOT NULL,
  emailprof VARCHAR(50) NOT NULL,
  profsenha VARCHAR(255) NOT NULL,
- nvauto INT NOT NULL
+ nvauto INT NOT NULL,
+ reset_token VARCHAR(255) NULL,
+ reset_expires INT NULL
 );
 
 -- Tabela da Turma
@@ -68,6 +70,8 @@ CREATE TABLE IF NOT EXISTS alunos (
  pontcompmesAluno INT NOT NULL DEFAULT 0,
  pontcompanoAluno INT NOT NULL DEFAULT 0,
  nometur VARCHAR(5) NOT NULL,
+ status VARCHAR(20) NOT NULL DEFAULT 'Ativo',
+ data_formatura DATE,
  FOREIGN KEY (nometur) REFERENCES turma(nometur) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
