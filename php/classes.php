@@ -115,7 +115,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
                 ?>
             </h3>
             <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
-                <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table caption-top">
+                <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table caption-top align-middle">
                     <thead class="sticky-top align-middle">
                         <tr>
                             <th rowspan="2" scope="col">RM</th>

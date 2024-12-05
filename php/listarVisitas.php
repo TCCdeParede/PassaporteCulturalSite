@@ -91,7 +91,7 @@ $rev = $_GET['rev'];
         </select>
       </form>
       <div class="table-responsive mt-3">
-        <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table">
+        <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table align-middle">
           <thead class="sticky-top text-center">
             <tr>
               <th scope="col">RM</th>

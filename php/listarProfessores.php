@@ -75,7 +75,7 @@ $isAdmin = $_SESSION['tipoLogin'] === 'administrador';
         <div class="col-lg-6 mx-auto">
             <h1 class="display-5 fw-bold text-body-emphasis fs-3 mb-4">Professores</h1>
             <div class="table-responsive mt-3">
-                <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table">
+                <table class="table table-striped table-bordered border-dark table-hover mb-0 custom-table align-middle">
                     <thead class="sticky-top text-center">
                         <tr>
                             <th scope="col">RM</th>
