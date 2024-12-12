@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS alunos (
  nomealu VARCHAR(255) NOT NULL,
  emailalu VARCHAR(50) NOT NULL,
  fotoalu TEXT NOT NULL,
- alusenha VARCHAR(12) NOT NULL,
+ alusenha VARCHAR(255) NOT NULL,
  pontmesGeralAluno INT NOT NULL DEFAULT 0,
  pontanoGeralAluno INT NOT NULL DEFAULT 0,
  pontcompmesAluno INT NOT NULL DEFAULT 0,
@@ -72,6 +72,8 @@ CREATE TABLE IF NOT EXISTS alunos (
  nometur VARCHAR(5) NOT NULL,
  status VARCHAR(20) NOT NULL DEFAULT 'Ativo',
  data_formatura DATE,
+ reset_token VARCHAR(255) NULL,
+ reset_expires DATETIME NULL,
  FOREIGN KEY (nometur) REFERENCES turma(nometur) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
